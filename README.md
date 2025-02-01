@@ -3,4 +3,4 @@
 > The best workout app.
 
 ## Schema
-![An image of the schema](./docs/schema.png)
+![An image of the schema](./static/schema.png)
