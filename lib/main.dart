@@ -1,6 +1,15 @@
+import 'package:benchy/database/models.dart';
 import 'package:flutter/material.dart';
+import 'package:benchy/database/db_helper.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:flutter/services.dart';
 
-void main() {
+Future main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
+  await SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
   runApp(const MyApp());
 }
 
@@ -36,6 +45,41 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class Utility extends StatefulWidget {
+  const Utility({super.key});
+  @override
+  State<StatefulWidget> createState() => _UtilityState();
+
+}
+class _UtilityState extends State<Utility>{
+  String _outputText = "";
+  void clearDB() async {
+    await DatabaseHelper.instance.deleteDatabaseFile();
+
+    // Reinitialize the database
+    await DatabaseHelper.instance.database;
+
+    setState(() {
+      _outputText = "";
+    });
+  }
+  void showDB() async {
+    _outputText = "";
+    final db = await DatabaseHelper.instance.getAllWorkouts();
+    for (var i = 0; i < db.length; i++) {
+      final element = db[i];
+      _outputText += "Workout $i:\nTitle: ${element.title}\nDate: ${element.date}\nDuration: ${element.duration}\nVolume: ${element.volume}\nNotes: ${element.notes}";
+    }
+    setState((){});
+  }
+  @override Widget build(BuildContext context) {
+    return Column(children: [
+      ElevatedButton(onPressed: (){clearDB();}, child: Text("Clear Database")),
+      ElevatedButton(onPressed: (){showDB();}, child: Text("View Database")),
+      Text(_outputText),
+    ]);
+  } 
+}
 
 
 class MyHomePage extends StatefulWidget {
@@ -45,31 +89,80 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  // This is all testing
+  final _formKey = GlobalKey<FormState>();
+  final _titleController = TextEditingController(text: "Good Workout");
+  final _durationController = TextEditingController(text: "5400");
+  final _volumeController = TextEditingController(text: "9000");
   String outputText = "Please tell me your name :(";
-  void updateUsernameText(String newName) {
-    setState(() {
-      outputText = "Hello $newName";
-      if (newName == "") {
-        outputText = "Please tell me your name :(";
-      }
-    });
-  }
   @override Widget build(BuildContext context) {
     return Scaffold(
       body: 
-      Column(
-        children: [
-          TextFormField(
-            decoration: 
-            InputDecoration(hintText: "John", labelText: "Name"),
-            onChanged: (String val) {
-              updateUsernameText(val);
-            },
-          ),
-          Text(outputText)
-        ])
+      Form(
+        key: _formKey,
+        child: 
+        SingleChildScrollView(child:
+        Column(
+          children: [
+            Utility(),
+            TextFormField(
+              controller: _titleController, 
+              decoration: 
+              InputDecoration(labelText: "Title"),
+            ),
+            TextFormField(
+              controller: _durationController, 
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(labelText: "Duration"),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                return 'Please enter a number';
+              }
+                if (int.tryParse(value) == null) {
+                return 'Please enter a valid number';
+              }
+                if (int.parse(value) <= 0) {
+                return 'Please enter a duration that is greater than 0';
+              }
+                return null;
+              },
+            ),
+            TextFormField(
+              controller: _volumeController, 
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(labelText: "Volume"),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                return 'Please enter a number';
+              }
+                if (int.tryParse(value) == null) {
+                return 'Please enter a valid number';
+              }
+                if (int.parse(value) <= 0) {
+                return 'Please enter a volume that is greater than 0';
+              }
+                return null;
+              },
+            ),
+            Padding(padding: EdgeInsets.all(16)),
+            ElevatedButton(
+              onPressed: ()async{
+                if (_formKey.currentState?.validate() ?? false) {  
+                  await DatabaseHelper.instance.database;
+                  final Workout tempWorkout = Workout(
+                  title: _titleController.text, 
+                  date: DateTime.now(), 
+                  duration: int.parse(_durationController.text), 
+                  volume: double.parse(_volumeController.text), 
+                  );
+                  await DatabaseHelper.instance.insertWorkout(tempWorkout);
+                }
+              }, 
+              child: Text("Create Workout"))
+          ]),
+      ),
+    )
     );
   }
-
 }
 
