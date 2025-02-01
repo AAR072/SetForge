@@ -1,7 +1,6 @@
 import 'package:benchy/database/models.dart';
 import 'package:flutter/material.dart';
 import 'package:benchy/database/db_helper.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:flutter/services.dart';
 
 Future main() async {

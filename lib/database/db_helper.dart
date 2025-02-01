@@ -214,6 +214,5 @@ Future<void> deleteDatabaseFile() async {
 
   // Delete the database file
   await deleteDatabase(path);
-  print('Database deleted at: $path');
 }
 }
