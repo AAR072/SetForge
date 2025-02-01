@@ -156,52 +156,7 @@ class DatabaseHelper {
       )
       ''');
   }
-  /// Inserts a [workout]
-  /// Example: 
-  /// ```dart
-  /// final workout = Workout(
-  /// id: null, // Auto-incremented by the database
-  /// title: 'Morning Workout',
-  /// date: DateTime.now().millisecondsSinceEpoch 
-  /// duration: 60,
-  /// notes: 'Great session!',
-  /// volume: 1500.0,
-  /// rating: 9,
-  /// caloriesBurned: 300,
-  /// );
-  /// final id = await DatabaseHelper.instance.insertWorkout(workout);
-  /// print('Inserted workout with ID: $id');
-  /// ```
-  Future<int> insertWorkout(Workout workout) async {
-    final db = await database;
-    return await db.insert('Workouts', workout.toMap());
-  }
-
-  /// Returns a [List] of all the user's [Workout]s 
-  /// Ex:
-  /// ```dart
-  /// final workouts = await DatabaseHelper.instance.getAllWorkouts();
-  /// workouts.forEach((workout) {
-  /// print('Workout: ${workout.title}, Date: ${workout.date}');
-  /// });
-  /// ```
-Future<List<Workout>> getAllWorkouts() async {
-  final db = await database;
-  final List<Map<String, dynamic>> maps = await db.query('Workouts');
-
-  return List.generate(maps.length, (i) {
-    return Workout(
-      id: maps[i]['id'],
-      title: maps[i]['title'],
-      date: DateTime.tryParse(maps[i]['date']) ?? DateTime(1970, 1, 1), // Fixed here
-      duration: maps[i]['duration'],
-      notes: maps[i]['notes'],
-      volume: maps[i]['volume'],
-      rating: maps[i]['rating'],
-      caloriesBurned: maps[i]['calories_burned'],
-    );
-  });
-}
+/// Deletes the entire [Database]. It must be reinitialized with a getter.
 Future<void> deleteDatabaseFile() async {
   final dbPath = await getDatabasesPath();
   final path = join(dbPath, 'benchy.db');

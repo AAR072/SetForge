@@ -1,4 +1,5 @@
 import 'package:benchy/database/models.dart';
+import 'package:benchy/database/workout_dao.dart';
 import 'package:flutter/material.dart';
 import 'package:benchy/database/db_helper.dart';
 import 'package:flutter/services.dart';
@@ -64,7 +65,7 @@ class _UtilityState extends State<Utility>{
   }
   void showDB() async {
     _outputText = "";
-    final db = await DatabaseHelper.instance.getAllWorkouts();
+    final db = await WorkoutDao.instance.getAllWorkouts();
     for (var i = 0; i < db.length; i++) {
       final element = db[i];
       _outputText += "Workout $i:\nTitle: ${element.title}\nDate: ${element.date}\nDuration: ${element.duration}\nVolume: ${element.volume}\nNotes: ${element.notes}";
@@ -154,7 +155,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   duration: int.parse(_durationController.text), 
                   volume: double.parse(_volumeController.text), 
                   );
-                  await DatabaseHelper.instance.insertWorkout(tempWorkout);
+                  await WorkoutDao.instance.insertWorkout(tempWorkout);
                 }
               }, 
               child: Text("Create Workout"))

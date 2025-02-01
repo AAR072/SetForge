@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'package:benchy/database/models.dart';
 import 'package:benchy/database/db_helper.dart';
+import 'package:benchy/database/workout_dao.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -13,6 +14,7 @@ sqfliteFfiInit();
 
 databaseFactory = databaseFactoryFfi;
   final dbHelper = DatabaseHelper.instance;
+  final workoutDao = WorkoutDao.instance;
 
   // Before each test, delete any existing database file so that
   // we start with a fresh copy of the database.
@@ -41,16 +43,27 @@ databaseFactory = databaseFactoryFfi;
       );
 
       // Insert the workout into the database
-      final insertedId = await dbHelper.insertWorkout(workout);
+      final insertedId = await workoutDao.insertWorkout(workout);
       expect(insertedId, isNonZero);
 
       // Retrieve all workouts from the database
-      final workouts = await dbHelper.getAllWorkouts();
+      final workouts = await workoutDao.getAllWorkouts();
       expect(workouts, isNotEmpty);
 
-      // Find the workout with the matching id
-      final retrievedWorkout =
-          workouts.firstWhere((w) => w.id == insertedId, orElse: () => throw Exception('Workout not found'));
+      final garbageWorkout = Workout(
+        title: 'Garbage Workout',
+        date: now,
+        duration: 60,
+        notes: 'Garbage notes',
+        volume: 1000.0,
+        rating: 7,
+        caloriesBurned: 250,
+      );
+
+      await workoutDao.insertWorkout(garbageWorkout);
+
+      final results = await workoutDao.getWorkout(1);
+      final retrievedWorkout = results[0];
       expect(retrievedWorkout.title, equals(workout.title));
       expect(retrievedWorkout.duration, equals(workout.duration));
       expect(retrievedWorkout.notes, equals(workout.notes));
