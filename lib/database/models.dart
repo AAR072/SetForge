@@ -159,6 +159,7 @@ class Maxes {
 
 class Exercise {
   final int? id;
+  /// Warmup, Working, Failure, Injury
   final String category;
   final int movementId;
   final int workoutId;

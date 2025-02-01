@@ -61,6 +61,9 @@ class WorkoutDao {
     );
   }
 
+  /// Gets a specific [Workout] from the database from its ID.
+  /// 
+  /// Returns an empty list if none found
   Future<List<Workout>> getWorkout(int id) async {
     final db = await _dbHelper.database;
     final List<Map<String, Object?>> maps = await db.query(
