@@ -1,3 +1,5 @@
+# Current state: development deferred
+
 # benchy
 
 > The best workout app.
