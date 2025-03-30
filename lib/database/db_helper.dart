@@ -12,17 +12,13 @@ class DatabaseHelper {
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    print("Waiting");
     _database = await _initDB('benchy.db');
     return _database!;
   }
 
   Future<Database> _initDB(String filePath) async {
-    print("INITING");
     final dbPath = await getApplicationDocumentsDirectory();
-    print("PATH DONE");
     final path = join(dbPath.path, filePath);
-    print(path);
       // Check if the directory exists, if not, create it
     return await openDatabase(
       path,
@@ -32,7 +28,6 @@ class DatabaseHelper {
   }
 
   Future<void> _createDB(Database db, int version) async {
-    print("CREATING");
     // Get a list of all table names
     List<Map<String, dynamic>> tables = await db.rawQuery(
       "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'");

@@ -1,0 +1,2 @@
+/home/aa/development/benchy/android/app/.cxx/RelWithDebInfo/03s543m1/x86/CMakeFiles/edit_cache.dir
+/home/aa/development/benchy/android/app/.cxx/RelWithDebInfo/03s543m1/x86/CMakeFiles/rebuild_cache.dir
