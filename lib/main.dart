@@ -62,9 +62,9 @@ class _UtilityState extends State<Utility> {
     _outputText = "";
     final db = await WorkoutDao.instance.getAllWorkouts();
     for (var i = 0; i < db.length; i++) {
-      final element = db[i];
-      _outputText += "Workout $i:\nTitle: ${element.title}\nDate: ${element.date}\nDuration: ${element.duration}\nVolume: ${element.volume}\nNotes: ${element.notes}";
-    }
+    final element = db[i];
+    _outputText += "Workout $i:\nTitle: ${element.title}\nDate: ${element.date}\nDuration: ${element.duration}\nVolume: ${element.volume}\nNotes: ${element.notes}";
+  }
     setState(() {});
   }
 
@@ -101,10 +101,15 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Form(
         key: _formKey,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Card(child: Column(children: [              Utility(),
+        child: NotificationListener<OverscrollIndicatorNotification>(
+        onNotification: (overscroll) {
+          overscroll.disallowIndicator(); // Prevent Overscroll Indication
+          return true;
+        },
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            Card(child: Column(children: [              Utility(),
               // Form fields
               TextFormField(
                 controller: _titleController,
@@ -170,151 +175,151 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
                 child: const Text("Create Workout"),
               ),
-],),),
+            ],),),
 
-              // Demo widgets for testing the theme
-              const SizedBox(height: 20),
-              Container(
+            // Demo widgets for testing the theme
+            const SizedBox(height: 20),
+            Container(
+              padding: const EdgeInsets.all(16),
+              child: const Text(
+                "This is a demo container. The theme will style it.",
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Card(
+              child: const Padding(
                 padding: const EdgeInsets.all(16),
                 child: const Text(
-                  "This is a demo container. The theme will style it.",
+                  "This is a demo card. The theme will handle its appearance.",
                 ),
               ),
-              const SizedBox(height: 20),
-              const Card(
-                child: const Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: const Text(
-                    "This is a demo card. The theme will handle its appearance.",
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              ListTile(
-                title: const Text("This is a demo ListTile."),
-                trailing: const Icon(Icons.arrow_forward),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {},
-                child: const Text("Demo Button"),
-              ),
-              const SizedBox(height: 20),
+            ),
+            const SizedBox(height: 20),
+            ListTile(
+              title: const Text("This is a demo ListTile."),
+              trailing: const Icon(Icons.arrow_forward),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {},
+              child: const Text("Demo Button"),
+            ),
+            const SizedBox(height: 20),
 
-              // Accordion-style expansion list
-              ExpansionTile(
-                title: const Text("Demo Accordion"),
+            // Accordion-style expansion list
+            ExpansionTile(
+              title: const Text("Demo Accordion"),
+              children: [
+                const ListTile(
+                  title: Text("Item 1"),
+                ),
+                const ListTile(
+                  title: Text("Item 2"),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 20),
+
+            // Slider to test theme styling
+            const Slider(
+              value: 50.0,
+              min: 0,
+              max: 100,
+              onChanged: null,
+            ),
+            const SizedBox(height: 20),
+
+            // Switch to test theme styling
+            Switch(
+              value: true,
+              onChanged: (value) {},
+            ),
+            const SizedBox(height: 20),
+
+            // Chip widget for theme testing
+            Chip(
+              label: const Text("Demo Chip"),
+            ),
+            const SizedBox(height: 20),
+
+            // SnackBar trigger button to test snackbars
+            ElevatedButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('This is a demo Snackbar')),
+                );
+              },
+              child: const Text('Show Snackbar'),
+            ),
+            const SizedBox(height: 20),
+
+            // **Graph for testing**
+            const Text("Demo Graph", style: TextStyle(fontSize: 20)),
+            const SizedBox(height: 20),
+            Container(
+              height: 300,
+              padding: const EdgeInsets.all(16),
+              child: LineChart(
+                LineChartData(
+                  gridData: FlGridData(show: true),
+                  titlesData: FlTitlesData(show: true),
+                  borderData: FlBorderData(show: true),
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: const [
+                        FlSpot(0, 1),
+                        FlSpot(1, 3),
+                        FlSpot(2, 1.5),
+                        FlSpot(3, 2),
+                        FlSpot(4, 4),
+                      ],
+                      isCurved: true,
+                      color: blue,
+                      barWidth: 4,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // **Group Widgets**
+            Container(
+              padding: const EdgeInsets.all(16),
+              child: Column(
                 children: [
-                  const ListTile(
-                    title: Text("Item 1"),
-                  ),
-                  const ListTile(
-                    title: Text("Item 2"),
-                  ),
+                  const Text("Grouped Section 1", style: TextStyle(fontSize: 18)),
+                  const Divider(),
+                  const Text("This is a section for testing groupings."),
+                  const Divider(),
+                  const Text("You can add multiple items here to test the look."),
                 ],
               ),
+            ),
 
-              const SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-              // Slider to test theme styling
-              const Slider(
-                value: 50.0,
-                min: 0,
-                max: 100,
-                onChanged: null,
+            // **Sections with headers**
+            Container(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("Section Header 1", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+                  const Text("Content for section 1."),
+                  const SizedBox(height: 20),
+                  const Text("Section Header 2", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+                  const Text("Content for section 2."),
+                ],
               ),
-              const SizedBox(height: 20),
-
-              // Switch to test theme styling
-              Switch(
-                value: true,
-                onChanged: (value) {},
-              ),
-              const SizedBox(height: 20),
-
-              // Chip widget for theme testing
-              Chip(
-                label: const Text("Demo Chip"),
-              ),
-              const SizedBox(height: 20),
-
-              // SnackBar trigger button to test snackbars
-              ElevatedButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('This is a demo Snackbar')),
-                  );
-                },
-                child: const Text('Show Snackbar'),
-              ),
-              const SizedBox(height: 20),
-
-              // **Graph for testing**
-              const Text("Demo Graph", style: TextStyle(fontSize: 20)),
-              const SizedBox(height: 20),
-              Container(
-                height: 300,
-                padding: const EdgeInsets.all(16),
-                child: LineChart(
-                  LineChartData(
-                    gridData: FlGridData(show: true),
-                    titlesData: FlTitlesData(show: true),
-                    borderData: FlBorderData(show: true),
-                    lineBarsData: [
-                      LineChartBarData(
-                        spots: const [
-                          FlSpot(0, 1),
-                          FlSpot(1, 3),
-                          FlSpot(2, 1.5),
-                          FlSpot(3, 2),
-                          FlSpot(4, 4),
-                        ],
-                        isCurved: true,
-                        color: blue,
-                        barWidth: 4,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // **Group Widgets**
-              Container(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    const Text("Grouped Section 1", style: TextStyle(fontSize: 18)),
-                    const Divider(),
-                    const Text("This is a section for testing groupings."),
-                    const Divider(),
-                    const Text("You can add multiple items here to test the look."),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 20),
-
-              // **Sections with headers**
-              Container(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text("Section Header 1", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 10),
-                    const Text("Content for section 1."),
-                    const SizedBox(height: 20),
-                    const Text("Section Header 2", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 10),
-                    const Text("Content for section 2."),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
       ),
     );
   }
