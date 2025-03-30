@@ -1,5 +1,6 @@
 // test/database_test.dart
 import 'dart:convert';
+import 'package:benchy/database/exercise_dao.dart';
 import 'package:benchy/database/models.dart';
 import 'package:benchy/database/db_helper.dart';
 import 'package:benchy/database/workout_dao.dart';
@@ -8,13 +9,12 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 
 
-void main() async {
+void main() {
 sqfliteFfiInit();
-
-
 databaseFactory = databaseFactoryFfi;
   final dbHelper = DatabaseHelper.instance;
   final workoutDao = WorkoutDao.instance;
+  final exerciseDao = ExerciseDao.instance;
 
   // Before each test, delete any existing database file so that
   // we start with a fresh copy of the database.
@@ -334,4 +334,283 @@ databaseFactory = databaseFactoryFfi;
       expect(metricFromMap.notes, equals(metric.notes));
     });
  });
+  // Add this group inside the main() function's groups
+
+group('Exercise DAO Tests', () {
+  late Database db;
+
+  setUp(() async {
+    db = await dbHelper.database;
+  });
+
+  Future<int> createWorkout() async {
+    final workout = Workout(
+      title: 'Test Workout',
+      date: DateTime.now(),
+      duration: 60,
+      notes: 'Test notes',
+      volume: 1000.0,
+      rating: 7,
+      caloriesBurned: 250,
+    );
+    return await workoutDao.insertWorkout(workout);
+  }
+
+  Future<int> createMovement() async {
+    final movement = Movement(
+      name: 'Test Movement',
+      type: 'Strength',
+      oneRepMax: 100.0,
+      muscleGroups: {'primary': 'Chest'},
+      instructions: 'Test instructions',
+      imageUrl: '',
+      maxWeight: 100.0,
+      maxSessionVolume: 1000.0,
+      maxSetVolume: 200.0,
+      equipment: 'Barbell',
+      completionCount: 0,
+    );
+    return await db.insert('Movements', movement.toMap());
+  }
+
+  test('Inserting and retrieving an Exercise', () async {
+    final workoutId = await createWorkout();
+    final movementId = await createMovement();
+
+    final exercise = Exercise(
+      category: 'Strength',
+      movementId: movementId,
+      workoutId: workoutId,
+      orderIndex: 1,
+      restTime: 90,
+      notes: 'Test exercise notes',
+      date: DateTime.now(),
+      volume: 2000.0,
+    );
+
+    final insertedId = await exerciseDao.insertExercise(exercise);
+    expect(insertedId, isNonZero);
+
+    final exercises = await exerciseDao.getAllExercises();
+    expect(exercises.length, 1);
+
+    final retrievedExercise = exercises[0];
+    expect(retrievedExercise.category, equals(exercise.category));
+    expect(retrievedExercise.movementId, equals(movementId));
+    expect(retrievedExercise.workoutId, equals(workoutId));
+  });
+
+  test('getAllExercises returns exercises sorted by date descending', () async {
+    final workoutId = await createWorkout();
+    final movementId = await createMovement();
+
+    final now = DateTime.now();
+    final yesterday = now.subtract(Duration(days: 1));
+
+    await exerciseDao.insertExercise(Exercise(
+      category: 'Strength',
+      movementId: movementId,
+      workoutId: workoutId,
+      orderIndex: 1,
+      date: yesterday,
+      restTime: 90,
+      notes: '',
+      volume: 1000.0,
+    ));
+
+    await exerciseDao.insertExercise(Exercise(
+      category: 'Cardio',
+      movementId: movementId,
+      workoutId: workoutId,
+      orderIndex: 2,
+      date: now,
+      restTime: 120,
+      notes: '',
+      volume: 2000.0,
+    ));
+
+    final exercises = await exerciseDao.getAllExercises();
+    expect(exercises[0].date.toIso8601String(), now.toIso8601String());
+    expect(exercises[1].date.toIso8601String(), yesterday.toIso8601String());
+  });
+
+  test('getExercisesForWorkout returns exercises sorted by order index', () async {
+    final workoutId1 = await createWorkout();
+    final workoutId2 = await createWorkout();
+    final movementId = await createMovement();
+
+    await exerciseDao.insertExercise(Exercise(
+      category: 'Strength',
+      movementId: movementId,
+      workoutId: workoutId1,
+      orderIndex: 2,
+      restTime: 90,
+      notes: '',
+      date: DateTime.now(),
+      volume: 1000.0,
+    ));
+
+    await exerciseDao.insertExercise(Exercise(
+      category: 'Strength',
+      movementId: movementId,
+      workoutId: workoutId1,
+      orderIndex: 1,
+      restTime: 90,
+      notes: '',
+      date: DateTime.now(),
+      volume: 1000.0,
+    ));
+
+    await exerciseDao.insertExercise(Exercise(
+      category: 'Cardio',
+      movementId: movementId,
+      workoutId: workoutId2,
+      orderIndex: 1,
+      restTime: 60,
+      notes: '',
+      date: DateTime.now(),
+      volume: 800.0,
+    ));
+
+    final exercisesWorkout1 = await exerciseDao.getExercisesForWorkout(workoutId1);
+    expect(exercisesWorkout1[0].orderIndex, 1);
+    expect(exercisesWorkout1[1].orderIndex, 2);
+  });
+
+  test('getExercisesForMovement returns exercises sorted by date descending', () async {
+    final movementId1 = await createMovement();
+    final movementId2 = await createMovement();
+    final workoutId = await createWorkout();
+
+    final now = DateTime.now();
+    final yesterday = now.subtract(Duration(days: 1));
+
+    await exerciseDao.insertExercise(Exercise(
+      category: 'Strength',
+      movementId: movementId1,
+      workoutId: workoutId,
+      orderIndex: 1,
+      date: yesterday,
+      restTime: 90,
+      notes: '',
+      volume: 1000.0,
+    ));
+
+    await exerciseDao.insertExercise(Exercise(
+      category: 'Strength',
+      movementId: movementId1,
+      workoutId: workoutId,
+      orderIndex: 2,
+      date: now,
+      restTime: 90,
+      notes: '',
+      volume: 1000.0,
+    ));
+
+    await exerciseDao.insertExercise(Exercise(
+      category: 'Cardio',
+      movementId: movementId2,
+      workoutId: workoutId,
+      orderIndex: 1,
+      date: now,
+      restTime: 60,
+      notes: '',
+      volume: 800.0,
+    ));
+
+    final exercisesMovement1 = await exerciseDao.getExercisesForMovement(movementId1);
+    expect(exercisesMovement1[0].date.toIso8601String(), now.toIso8601String());
+    expect(exercisesMovement1[1].date.toIso8601String(), yesterday.toIso8601String());
+  });
+
+  test('updateExercise modifies existing exercise', () async {
+    final workoutId = await createWorkout();
+    final movementId = await createMovement();
+
+    final exerciseId = await exerciseDao.insertExercise(Exercise(
+      category: 'Strength',
+      movementId: movementId,
+      workoutId: workoutId,
+      orderIndex: 1,
+      restTime: 90,
+      notes: 'Original',
+      date: DateTime.now(),
+      volume: 1000.0,
+    ));
+
+    final rowsUpdated = await exerciseDao.updateExercise(Exercise(
+      id: exerciseId,
+      category: 'Cardio',
+      movementId: movementId,
+      workoutId: workoutId,
+      orderIndex: 2,
+      restTime: 120,
+      notes: 'Updated',
+      date: DateTime.now().add(Duration(days: 1)),
+      volume: 2000.0,
+    ));
+
+    expect(rowsUpdated, 1);
+
+    final updatedExercise = (await exerciseDao.getExercise(exerciseId))[0];
+    expect(updatedExercise.category, 'Cardio');
+    expect(updatedExercise.notes, 'Updated');
+  });
+
+  test('deleteExercise removes the exercise', () async {
+    final workoutId = await createWorkout();
+    final movementId = await createMovement();
+
+    final exerciseId = await exerciseDao.insertExercise(Exercise(
+      category: 'Strength',
+      movementId: movementId,
+      workoutId: workoutId,
+      orderIndex: 1,
+      restTime: 90,
+      notes: '',
+      date: DateTime.now(),
+      volume: 1000.0,
+    ));
+
+    final rowsDeleted = await exerciseDao.deleteExercise(exerciseId);
+    expect(rowsDeleted, 1);
+
+    final result = await exerciseDao.getExercise(exerciseId);
+    expect(result.isEmpty, isTrue);
+  });
+
+  test('getExercise retrieves correct exercise by ID', () async {
+    final workoutId1 = await createWorkout();
+    final movementId1 = await createMovement();
+    final exerciseId1 = await exerciseDao.insertExercise(Exercise(
+      category: 'Strength',
+      movementId: movementId1,
+      workoutId: workoutId1,
+      orderIndex: 1,
+      restTime: 90,
+      notes: 'Exercise 1',
+      date: DateTime.now(),
+      volume: 1000.0,
+    ));
+
+    final workoutId2 = await createWorkout();
+    final movementId2 = await createMovement();
+    final exerciseId2 = await exerciseDao.insertExercise(Exercise(
+      category: 'Cardio',
+      movementId: movementId2,
+      workoutId: workoutId2,
+      orderIndex: 1,
+      restTime: 60,
+      notes: 'Exercise 2',
+      date: DateTime.now(),
+      volume: 800.0,
+    ));
+
+    final result1 = await exerciseDao.getExercise(exerciseId1);
+    expect(result1[0].id, exerciseId1);
+
+    final result2 = await exerciseDao.getExercise(exerciseId2);
+    expect(result2[0].id, exerciseId2);
+  });
+});
 }
