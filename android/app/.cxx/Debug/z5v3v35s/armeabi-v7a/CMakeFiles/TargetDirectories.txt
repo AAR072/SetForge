@@ -1,0 +1,2 @@
+/home/aa/development/benchy/android/app/.cxx/Debug/z5v3v35s/armeabi-v7a/CMakeFiles/edit_cache.dir
+/home/aa/development/benchy/android/app/.cxx/Debug/z5v3v35s/armeabi-v7a/CMakeFiles/rebuild_cache.dir

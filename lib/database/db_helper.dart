@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -9,13 +12,18 @@ class DatabaseHelper {
 
   Future<Database> get database async {
     if (_database != null) return _database!;
+    print("Waiting");
     _database = await _initDB('benchy.db');
     return _database!;
   }
 
   Future<Database> _initDB(String filePath) async {
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, filePath);
+    print("INITING");
+    final dbPath = await getApplicationDocumentsDirectory();
+    print("PATH DONE");
+    final path = join(dbPath.path, filePath);
+    print(path);
+      // Check if the directory exists, if not, create it
     return await openDatabase(
       path,
       version: 1,
@@ -24,6 +32,7 @@ class DatabaseHelper {
   }
 
   Future<void> _createDB(Database db, int version) async {
+    print("CREATING");
     // Get a list of all table names
     List<Map<String, dynamic>> tables = await db.rawQuery(
       "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'");
@@ -157,8 +166,8 @@ class DatabaseHelper {
   }
 /// Deletes the entire [Database]. It must be reinitialized with a getter.
 Future<void> deleteDatabaseFile() async {
-  final dbPath = await getDatabasesPath();
-  final path = join(dbPath, 'benchy.db');
+  final dbPath = await getApplicationDocumentsDirectory();
+  final path = join(dbPath.path, 'benchy.db');
 
   // Close the existing database connection
   if (_database != null) {
