@@ -1,10 +1,14 @@
+import 'package:benchy/database/exercise_dao.dart';
 import 'package:benchy/database/models.dart';
 import 'package:benchy/database/workout_dao.dart';
 import 'package:flutter/material.dart';
 import 'package:benchy/database/db_helper.dart';
 import 'package:flutter/services.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 Future main() async {
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -69,6 +73,7 @@ class _UtilityState extends State<Utility>{
     for (var i = 0; i < db.length; i++) {
       final element = db[i];
       _outputText += "Workout $i:\nTitle: ${element.title}\nDate: ${element.date}\nDuration: ${element.duration}\nVolume: ${element.volume}\nNotes: ${element.notes}";
+    print(await ExerciseDao.instance.getAllExercises());
     }
     setState((){});
   }
@@ -78,7 +83,7 @@ class _UtilityState extends State<Utility>{
       ElevatedButton(onPressed: (){showDB();}, child: Text("View Database")),
       Text(_outputText),
     ]);
-  } 
+  }
 }
 
 
@@ -97,21 +102,21 @@ class _MyHomePageState extends State<MyHomePage> {
   String outputText = "Please tell me your name :(";
   @override Widget build(BuildContext context) {
     return Scaffold(
-      body: 
+      body:
       Form(
         key: _formKey,
-        child: 
+        child:
         SingleChildScrollView(child:
         Column(
           children: [
             Utility(),
             TextFormField(
-              controller: _titleController, 
-              decoration: 
+              controller: _titleController,
+              decoration:
               InputDecoration(labelText: "Title"),
             ),
             TextFormField(
-              controller: _durationController, 
+              controller: _durationController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(labelText: "Duration"),
               validator: (value) {
@@ -128,7 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             ),
             TextFormField(
-              controller: _volumeController, 
+              controller: _volumeController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(labelText: "Volume"),
               validator: (value) {
@@ -147,17 +152,18 @@ class _MyHomePageState extends State<MyHomePage> {
             Padding(padding: EdgeInsets.all(16)),
             ElevatedButton(
               onPressed: ()async{
-                if (_formKey.currentState?.validate() ?? false) {  
+                if (_formKey.currentState?.validate() ?? false) {
                   await DatabaseHelper.instance.database;
                   final Workout tempWorkout = Workout(
-                  title: _titleController.text, 
-                  date: DateTime.now(), 
-                  duration: int.parse(_durationController.text), 
-                  volume: double.parse(_volumeController.text), 
+                  title: _titleController.text,
+                  date: DateTime.now(),
+                  duration: int.parse(_durationController.text),
+                  volume: double.parse(_volumeController.text),
                   );
                   await WorkoutDao.instance.insertWorkout(tempWorkout);
+                  await ExerciseDao.instance.insertExercise(Exercise(category: "LOL", movementId: 2, workoutId: 2, orderIndex: 2, restTime: 23, notes: "", date: DateTime.now(), volume: 20));
                 }
-              }, 
+              },
               child: Text("Create Workout"))
           ]),
       ),
