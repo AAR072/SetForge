@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class NavBar extends StatelessWidget {
   final Function(int) onItemTapped;
-  final int selectedIndex;  // Added selectedIndex to track the current selected tab
+  final int selectedIndex;
 
   const NavBar({super.key, required this.onItemTapped, required this.selectedIndex});
 
   @override
   Widget build(BuildContext context) {
-return BottomNavigationBar(
+    return BottomNavigationBar(
       items: [
         BottomNavigationBarItem(
           icon: Icon(selectedIndex == 0 ? Icons.home : Icons.home_outlined),
