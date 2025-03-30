@@ -1,0 +1,2 @@
+/home/aa/development/benchy/android/app/.cxx/Debug/z5v3v35s/x86_64/CMakeFiles/edit_cache.dir
+/home/aa/development/benchy/android/app/.cxx/Debug/z5v3v35s/x86_64/CMakeFiles/rebuild_cache.dir
