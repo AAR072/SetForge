@@ -13,7 +13,6 @@ final ThemeData macroFactorTheme = ThemeData(
     onSecondary: Colors.white, // Text color on secondary color
   ),
   appBarTheme: AppBarTheme(
-    backgroundColor: secondaryBackground, // AppBar background color
     iconTheme: IconThemeData(color: Colors.white), // AppBar icon color
   ),
   textTheme: TextTheme(
@@ -43,9 +42,11 @@ final ThemeData macroFactorTheme = ThemeData(
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
   ),
   bottomNavigationBarTheme: BottomNavigationBarThemeData(
-    backgroundColor: tertiaryBackground, // Bottom navigation bar background
-    selectedItemColor: blue,
+    backgroundColor: secondaryBackground, // Bottom navigation bar background
+    selectedItemColor: Colors.white,
     unselectedItemColor: Colors.white70,
+    selectedLabelStyle: const TextStyle(fontSize: 14),
+    unselectedLabelStyle: const TextStyle(fontSize: 14)
   ),
   expansionTileTheme: ExpansionTileThemeData(
     backgroundColor: secondaryBackground
