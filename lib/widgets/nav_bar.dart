@@ -8,18 +8,18 @@ class NavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      items: const [
+return BottomNavigationBar(
+      items: [
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
+          icon: Icon(selectedIndex == 0 ? Icons.home : Icons.home_outlined),
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.fitness_center),
+          icon: Icon(selectedIndex == 1 ? Icons.fitness_center : Icons.fitness_center_outlined),
           label: 'Workout',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.manage_accounts),
+          icon: Icon(selectedIndex == 2 ? Icons.manage_accounts : Icons.manage_accounts_outlined),
           label: 'Profile',
         ),
       ],
