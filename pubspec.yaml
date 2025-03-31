@@ -41,6 +41,7 @@ dependencies:
   sqlite3_flutter_libs: any
   path_provider: any
   flutter_riverpod: ^2.6.1
+  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:

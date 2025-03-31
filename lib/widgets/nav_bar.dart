@@ -20,7 +20,7 @@ class NavBar extends StatelessWidget {
         ),
         BottomNavigationBarItem(
           icon: Icon(selectedIndex == 2 ? Icons.manage_accounts : Icons.manage_accounts_outlined),
-          label: 'Profile',
+          label: 'Setup',
         ),
       ],
       currentIndex: selectedIndex,  // Set the currentIndex to the selectedIndex
