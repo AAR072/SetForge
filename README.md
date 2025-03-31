@@ -1,4 +1,4 @@
-# Current state: development deferred
+# Current state: incremental development
 
 # benchy
 
