@@ -8,31 +8,65 @@ import 'package:benchy/screens/control_screen.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
+
 final router = GoRouter(
   navigatorKey: _rootNavigatorKey,
   initialLocation: "/home",
   routes: [
     ShellRoute(
       navigatorKey: _shellNavigatorKey,
-      builder: (context, state, child) =>
-          ControlScreen(child: child),
+      pageBuilder: (context, state, child) {
+        return CustomTransitionPage(
+          key: state.pageKey,
+          transitionDuration: Duration.zero,
+          child: ControlScreen(child: child),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return child;
+          },
+        );
+      },
       routes: [
         GoRoute(
           path: '/home',
           parentNavigatorKey: _shellNavigatorKey,
-          builder: (context, state) => const HomeScreen(),
+          pageBuilder: (context, state) {
+            return CustomTransitionPage(
+              key: state.pageKey,
+              transitionDuration: Duration.zero,
+              child: const HomeScreen(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                return child;
+              },
+            );
+          },
         ),
         GoRoute(
           path: '/workout',
           parentNavigatorKey: _shellNavigatorKey,
-          builder: (context, state) => const WorkoutScreen(),
+          pageBuilder: (context, state) {
+            return CustomTransitionPage(
+              key: state.pageKey,
+              transitionDuration: Duration.zero,
+              child: const WorkoutScreen(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                return child;
+              },
+            );
+          },
         ),
         GoRoute(
           path: '/settings',
           parentNavigatorKey: _shellNavigatorKey,
-          builder: (context, state) => const ProfileScreen(),
-          routes: [
-          ],
+          pageBuilder: (context, state) {
+            return CustomTransitionPage(
+              key: state.pageKey,
+              transitionDuration: Duration.zero,
+              child: const ProfileScreen(),
+              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                return child;
+              },
+            );
+          },
         ),
       ],
     )
