@@ -15,7 +15,6 @@ class HomeScreen extends StatelessWidget {
         shrinkWrap: true,
         children: [
           Text("Home")
-
         ],
       ),
     ),

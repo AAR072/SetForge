@@ -1,3 +1,4 @@
+import 'package:benchy/router.dart';
 import 'package:benchy/screens/control_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:benchy/database/db_helper.dart';
@@ -32,10 +33,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Benchy',
       theme: macroFactorTheme,
-      home: const ControlScreen(),
+      routerConfig: router,
     );
   }
 }
