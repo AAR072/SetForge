@@ -1,42 +1,61 @@
-import 'package:benchy/screens/home_screen.dart';
-import 'package:benchy/screens/profile_screen.dart';
-import 'package:benchy/screens/workout_screen.dart';
-import 'package:benchy/styling/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:benchy/widgets/nav_bar.dart';
-import 'package:flutter/services.dart'; // Import the NavBar widget
+import 'package:go_router/go_router.dart';
 
-class ControlScreen extends StatefulWidget {
-  const ControlScreen({super.key});
+class ControlScreen extends StatefulWidget{
+
+  const ControlScreen({super.key, this.child});
+  final Widget? child;
 
   @override
-  _ControlScreenState createState() => _ControlScreenState();
+  State<ControlScreen> createState() =>
+    _ControlScreenState();
+
+
 }
-
 class _ControlScreenState extends State<ControlScreen> {
-  int _selectedIndex = 0;
-
-  static const List<Widget> _widgetOptions = <Widget>[
-    HomeScreen(),
-    WorkoutScreen(),
-    ProfileScreen(),
-  ];
-
-  void _onItemTapped(int index) {
+  int currentIndex = 0;
+  void changeTab(int index) {
+    switch (index) {
+      case 0:
+        context.go('/home');
+        break;
+      case 1:
+        context.go('/workout');
+        break;
+      case 2:
+        context.go('/settings');
+        break;
+      default:
+        context.go('/home');
+        break;
+    }
     setState(() {
-      _selectedIndex = index;
+      currentIndex = index;
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: _widgetOptions[_selectedIndex],  // Display the selected widget
-      extendBody: true,
-      bottomNavigationBar: NavBar(
-        onItemTapped: _onItemTapped,  // Pass the callback function
-        selectedIndex: _selectedIndex, // Pass the current selected index
+      body: widget.child,
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: changeTab,
+        currentIndex: currentIndex,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(currentIndex == 0 ? Icons.home : Icons.home_outlined),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(currentIndex == 1 ? Icons.fitness_center : Icons.fitness_center_outlined),
+            label: 'Workout',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(currentIndex == 2 ? Icons.manage_accounts : Icons.manage_accounts_outlined),
+            label: 'Setup',
+          ),
+        ],
       ),
     );
   }
