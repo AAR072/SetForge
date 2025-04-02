@@ -1,14 +1,15 @@
 import 'package:benchy/styling/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+class SetupScreen extends StatefulWidget {
+  const SetupScreen({super.key});
 
   @override
-  _ProfileScreenState createState() => _ProfileScreenState();
+  _SetupScreenState createState() => _SetupScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateMixin {
+class _SetupScreenState extends State<SetupScreen> with TickerProviderStateMixin {
    late AnimationController _opacityController;
 
 
@@ -46,7 +47,7 @@ class _ProfileScreenState extends State<ProfileScreen> with TickerProviderStateM
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.w900,
-              fontSize: 14
+              fontSize: 16
             ),
 
           ),
@@ -79,46 +80,51 @@ if (scrollNotification is ScrollUpdateNotification) {
               ),
               Padding(padding: EdgeInsets.only(top: 20)),
               // Profile Card
-              Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12.0), // Round top-left corner
-                    topRight: Radius.circular(12.0), // Round top-right corner
-                    bottomLeft: Radius.zero, // Keep bottom-left corner rectangular
-                    bottomRight: Radius.zero, // Keep bottom-right corner rectangular
-                  ),
-                ),
-                margin: EdgeInsets.only(top: 0.0, bottom: 0.0),
-                child: Column(
-                  children: [
-                    ListTile(
-                      visualDensity: VisualDensity(vertical: -1),
-                      leading: Icon(Icons.person),
-                      title: Text(
-                        'Profile',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      trailing: Icon(Icons.keyboard_arrow_right_sharp),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Divider(
-                              color: Color.fromARGB(20, 255, 255, 255),
-                              thickness: 1.0,
-                              height: 0,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+            GestureDetector(
+              onTap: () {
+                context.push('/profile');
+              },
+              child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12.0), // Round top-left corner
+                  topRight: Radius.circular(12.0), // Round top-right corner
+                  bottomLeft: Radius.zero, // Keep bottom-left corner rectangular
+                  bottomRight: Radius.zero, // Keep bottom-right corner rectangular
                 ),
               ),
+              margin: EdgeInsets.only(top: 0.0, bottom: 0.0),
+              child: Column(
+                children: [
+                  ListTile(
+                    visualDensity: VisualDensity(vertical: -1),
+                    leading: Icon(Icons.person),
+                    title: Text(
+                      'Profile',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    trailing: Icon(Icons.keyboard_arrow_right_sharp),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 0.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Divider(
+                            color: Color.fromARGB(20, 255, 255, 255),
+                            thickness: 1.0,
+                            height: 0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ),
               // Data Card
               Card(
                 margin: EdgeInsets.only(top: 0.0, bottom: 0.0),

@@ -1,7 +1,9 @@
+import 'package:benchy/screens/setup/profile_screen.dart';
+import 'package:benchy/screens/setup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:benchy/screens/home_screen.dart';
-import 'package:benchy/screens/profile_screen.dart';
+import 'package:benchy/screens/setup_screen.dart';
 import 'package:benchy/screens/workout_screen.dart';
 import 'package:benchy/widgets/nav_bar.dart';
 import 'package:benchy/screens/control_screen.dart';
@@ -61,7 +63,7 @@ final router = GoRouter(
             return CustomTransitionPage(
               key: state.pageKey,
               transitionDuration: Duration.zero,
-              child: const ProfileScreen(),
+              child: const SetupScreen(),
               transitionsBuilder: (context, animation, secondaryAnimation, child) {
                 return child;
               },
@@ -69,6 +71,13 @@ final router = GoRouter(
           },
         ),
       ],
+    ),
+    GoRoute(
+      path: '/profile',
+      builder: (context, state) => const ProfileScreen(),
+      routes: [
+      ],
+
     )
   ],
 );

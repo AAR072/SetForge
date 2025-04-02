@@ -8,7 +8,7 @@ final ThemeData macroFactorTheme = ThemeData(
   colorScheme: ColorScheme.dark(
     primary: blue, // Primary color for various components
     secondary: yellow, // Secondary color for accents
-    surface: purple, // Surface color (for cards, etc.)
+    surface: primaryBackground, // Surface color (for cards, etc.)
     onSurface: Colors.white, // Text color on surfaces
     onSecondary: Colors.white, // Text color on secondary color
   ),
