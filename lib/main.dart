@@ -26,6 +26,7 @@ Future main() async {
   ));
   await DatabaseHelper.instance.database;
   await SharedPrefsHelper.init();
+  print(SharedPrefsHelper.setBoolean("darkMode", true));
   runApp(const MyApp());
 }
 
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'Benchy',
-      theme: macroFactorTheme,
+      theme: SharedPrefsHelper.isDarkMode? macroFactorDarkTheme : macroFactorLightTheme,
       routerConfig: router,
     );
   }

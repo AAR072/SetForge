@@ -9,9 +9,9 @@ class UnitsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: secondaryBackground,
+      backgroundColor: Palette.secondaryBackground,
       appBar: AppBar(
-        backgroundColor: secondaryBackground,
+        backgroundColor: Palette.secondaryBackground,
         elevation: 0, // No shadow
         centerTitle: true,
         toolbarHeight: 30,
@@ -28,7 +28,6 @@ class UnitsScreen extends StatelessWidget {
           child: Text(
             "Units", // AppBar title
             style: TextStyle(
-              color: Colors.white,
               fontWeight: FontWeight.w900,
               fontSize: 16
             ),
@@ -64,10 +63,10 @@ class UnitsScreen extends StatelessWidget {
                   return distanceMetric;
                 })(),
                 minWidth: double.maxFinite,
-                activeBgColors: [[Colors.white], [Colors.white]],
-                activeFgColor: Colors.black,
-                inactiveBgColor: tertiaryBackground,
-                inactiveFgColor: Colors.white,
+                activeBgColors: [[Palette.inverseThemeColor], [Palette.inverseThemeColor]],
+                activeFgColor: Palette.themeColor,
+                inactiveBgColor: Palette.inactiveBgColor,
+                inactiveFgColor: Palette.inverseThemeColor,
                 totalSwitches: 2,
                 labels: ['kg', 'lbs'],
                 onToggle: (index) {
@@ -93,10 +92,10 @@ class UnitsScreen extends StatelessWidget {
                   return distanceMetric;
                 })(),
                 minWidth: double.maxFinite,
-                activeBgColors: [[Colors.white], [Colors.white]],
-                activeFgColor: Colors.black,
-                inactiveBgColor: tertiaryBackground,
-                inactiveFgColor: Colors.white,
+                activeBgColors: [[Palette.inverseThemeColor], [Palette.inverseThemeColor]],
+                activeFgColor: Palette.themeColor,
+                inactiveBgColor: Palette.inactiveBgColor,
+                inactiveFgColor: Palette.inverseThemeColor,
                 totalSwitches: 2,
                 labels: ['Kilometres', 'Miles'],
                 onToggle: (index) {
@@ -122,10 +121,10 @@ class UnitsScreen extends StatelessWidget {
                   return distanceMetric;
                 })(),
                 minWidth: double.maxFinite,
-                activeBgColors: [[Colors.white], [Colors.white]],
-                activeFgColor: Colors.black,
-                inactiveBgColor: tertiaryBackground,
-                inactiveFgColor: Colors.white,
+                activeBgColors: [[Palette.inverseThemeColor], [Palette.inverseThemeColor]],
+                activeFgColor: Palette.themeColor,
+                inactiveBgColor: Palette.inactiveBgColor,
+                inactiveFgColor: Palette.inverseThemeColor,
                 totalSwitches: 2,
                 labels: ['Centimetres', 'Inches'],
                 onToggle: (index) {

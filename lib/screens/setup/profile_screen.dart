@@ -8,7 +8,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: secondaryBackground,
+        backgroundColor: Palette.secondaryBackground,
         elevation: 0, // No shadow
         centerTitle: true,
         toolbarHeight: 30,
@@ -25,7 +25,6 @@ class ProfileScreen extends StatelessWidget {
           child: Text(
             "Profile", // AppBar title
             style: TextStyle(
-              color: Colors.white,
               fontWeight: FontWeight.w900,
               fontSize: 16
             ),
