@@ -1,4 +1,5 @@
 import 'package:benchy/screens/setup/profile_screen.dart';
+import 'package:benchy/screens/setup/units_screen.dart';
 import 'package:benchy/screens/setup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -73,11 +74,16 @@ final router = GoRouter(
       ],
     ),
     GoRoute(
+      path: '/units',
+      builder: (context, state) => const UnitsScreen(),
+      routes: [
+      ],
+    ),
+    GoRoute(
       path: '/profile',
       builder: (context, state) => const ProfileScreen(),
       routes: [
       ],
-
     )
   ],
 );

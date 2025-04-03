@@ -253,7 +253,11 @@ if (scrollNotification is ScrollUpdateNotification) {
                 ),
               ),
               // Units Card
-              Card(
+            GestureDetector(
+              onTap: () {
+                context.push('/units');
+              },
+              child: Card(
                 margin: EdgeInsets.only(top: 0.0, bottom: 0.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.zero, // Remove rounded corners to make it a regular box
@@ -288,7 +292,8 @@ if (scrollNotification is ScrollUpdateNotification) {
                   ],
                 ),
               ),
-              // Theme Card
+            ),
+            // Theme Card
               Card(
                 margin: EdgeInsets.only(top: 0.0, bottom: 0.0),
                 shape: RoundedRectangleBorder(
