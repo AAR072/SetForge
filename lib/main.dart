@@ -1,5 +1,5 @@
+import 'package:benchy/prefs.dart';
 import 'package:benchy/router.dart';
-import 'package:benchy/screens/control_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:benchy/database/db_helper.dart';
 import 'package:flutter/services.dart';
@@ -25,6 +25,7 @@ Future main() async {
     statusBarBrightness: Brightness.dark,
   ));
   await DatabaseHelper.instance.database;
+  await SharedPrefsHelper.init();
   runApp(const MyApp());
 }
 
