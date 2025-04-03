@@ -35,7 +35,7 @@ class _SetupScreenState extends State<SetupScreen> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: secondaryBackground,
+        backgroundColor: Palette.secondaryBackground,
         elevation: 0, // No shadow
         centerTitle: true,
         toolbarHeight: 30,
@@ -45,7 +45,6 @@ class _SetupScreenState extends State<SetupScreen> with TickerProviderStateMixin
           child: Text(
             "Setup", // AppBar title
             style: TextStyle(
-              color: Colors.white,
               fontWeight: FontWeight.w900,
               fontSize: 16
             ),
@@ -103,6 +102,7 @@ if (scrollNotification is ScrollUpdateNotification) {
                       'Profile',
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
+                        color: Theme.of(context).textTheme.bodyMedium?.color
                       ),
                     ),
                     trailing: Icon(Icons.keyboard_arrow_right_sharp),

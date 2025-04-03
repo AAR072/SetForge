@@ -18,6 +18,16 @@ class SharedPrefsHelper {
     return;
   }
 
+  /// Check if we are in dark mode
+  /// Assumes that it is defined
+  static bool get isDarkMode {
+    final dark = getBoolean("darkMode");
+    if (dark == false) {
+      return false;
+    }
+    return true;
+  }
+
   /// Set a string
   static Future<void> setString(String key, String value) async {
     await _prefs?.setString(key, value);
@@ -72,6 +82,7 @@ class SharedPrefsHelper {
   static Future<void> remove(String key) async {
     await _prefs?.remove(key);
   }
+
 
   /// Clear all preferences
   static Future<void> clearAll() async {
