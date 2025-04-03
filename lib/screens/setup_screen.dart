@@ -294,6 +294,11 @@ if (scrollNotification is ScrollUpdateNotification) {
               ),
             ),
             // Theme Card
+            GestureDetector(
+              onTap: () {
+                context.push('/theme');
+              },
+              child:
               Card(
                 margin: EdgeInsets.only(top: 0.0, bottom: 0.0),
                 shape: RoundedRectangleBorder(
@@ -334,6 +339,7 @@ if (scrollNotification is ScrollUpdateNotification) {
                   ],
                 ),
               ),
+            ),
             Padding(padding: EdgeInsets.only(top: 20)),
               Text(
                 "Info",

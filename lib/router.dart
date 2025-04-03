@@ -1,4 +1,5 @@
 import 'package:benchy/screens/setup/profile_screen.dart';
+import 'package:benchy/screens/setup/theme_screen.dart';
 import 'package:benchy/screens/setup/units_screen.dart';
 import 'package:benchy/screens/setup_screen.dart';
 import 'package:flutter/material.dart';
@@ -76,6 +77,12 @@ final router = GoRouter(
     GoRoute(
       path: '/units',
       builder: (context, state) => const UnitsScreen(),
+      routes: [
+      ],
+    ),
+    GoRoute(
+      path: '/theme',
+      builder: (context, state) => const ThemeScreen(),
       routes: [
       ],
     ),

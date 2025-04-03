@@ -3,6 +3,7 @@ import 'package:benchy/router.dart';
 import 'package:flutter/material.dart';
 import 'package:benchy/database/db_helper.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:benchy/styling/theme.dart';
 
@@ -26,8 +27,11 @@ Future main() async {
   ));
   await DatabaseHelper.instance.database;
   await SharedPrefsHelper.init();
-  print(SharedPrefsHelper.setBoolean("darkMode", true));
-  runApp(const MyApp());
+    runApp(
+    Phoenix(
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
