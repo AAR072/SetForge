@@ -350,6 +350,11 @@ if (scrollNotification is ScrollUpdateNotification) {
               ),
               Padding(padding: EdgeInsets.only(top: 20)),
             // FAQ Card
+            GestureDetector(
+              onTap: () {
+                context.push('/faq');
+              },
+              child:
             Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
@@ -390,6 +395,7 @@ if (scrollNotification is ScrollUpdateNotification) {
                   ],
                 ),
               ),
+            ),
               // Features Card
               Card(
                 margin: EdgeInsets.only(top: 0.0, bottom: 0.0),

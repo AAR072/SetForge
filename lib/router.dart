@@ -1,3 +1,4 @@
+import 'package:benchy/screens/setup/faq_screen.dart';
 import 'package:benchy/screens/setup/profile_screen.dart';
 import 'package:benchy/screens/setup/theme_screen.dart';
 import 'package:benchy/screens/setup/units_screen.dart';
@@ -89,6 +90,12 @@ final router = GoRouter(
     GoRoute(
       path: '/profile',
       builder: (context, state) => const ProfileScreen(),
+      routes: [
+      ],
+    ),
+    GoRoute(
+      path: '/faq',
+      builder: (context, state) => const FaqScreen(),
       routes: [
       ],
     )

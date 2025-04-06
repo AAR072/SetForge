@@ -28,6 +28,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  url_launcher: any
   sqflite: ^2.0.0+4
   sqflite_common_ffi: any
   path: ^1.8.0
