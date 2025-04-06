@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class ControlScreen extends StatefulWidget{
-
   const ControlScreen({super.key, this.child});
   final Widget? child;
 
