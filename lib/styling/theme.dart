@@ -61,6 +61,7 @@ final ThemeData macroFactorDarkTheme = ThemeData(
     listTileTheme: ListTileThemeData(textColor: Colors.white));
 
 final ThemeData macroFactorLightTheme = ThemeData(
+    dividerColor: Colors.transparent,
     appBarTheme: AppBarTheme(
         titleTextStyle: TextStyle(color: Colors.black),
         color: Colors.black,

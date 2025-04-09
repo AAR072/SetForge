@@ -21,6 +21,9 @@ class Palette {
   static Color get inverseThemeColor {
     return SharedPrefsHelper.isDarkMode? Colors.white : Colors.black;
   }
+  static Color get inverseDimThemeColor{
+    return SharedPrefsHelper.isDarkMode? Color(0XFF8A8888) : Color(0XFF8A8888);
+  }
   static Color get themeColor{
     return !SharedPrefsHelper.isDarkMode? Colors.white : Colors.black;
   }

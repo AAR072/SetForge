@@ -102,10 +102,7 @@ class _WorkoutScreenState extends State<WorkoutScreen>
                             'Start Empty Workout',
                             style: TextStyle(
                                 fontWeight: FontWeight.w500,
-                                color: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.color),
+                                color: Palette.inverseThemeColor),
                           ),
                         ),
                       ],
@@ -150,10 +147,7 @@ class _WorkoutScreenState extends State<WorkoutScreen>
                                   'New Routine',
                                   style: TextStyle(
                                       fontWeight: FontWeight.w500,
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.color),
+                                      color: Palette.inverseThemeColor),
                                 ),
                               ),
                             ],
@@ -189,10 +183,7 @@ class _WorkoutScreenState extends State<WorkoutScreen>
                                   'New Folder',
                                   style: TextStyle(
                                       fontWeight: FontWeight.w500,
-                                      color: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.color),
+                                      color: Palette.inverseThemeColor),
                                 ),
                               ),
                             ],
@@ -234,7 +225,7 @@ class _WorkoutScreenState extends State<WorkoutScreen>
                           _expanded[0]
                               ? Icons.keyboard_arrow_down
                               : Icons.keyboard_arrow_right_sharp,
-                          color: Palette.inverseThemeColor,
+                          color: Palette.inverseDimThemeColor,
                         ),
                         showTrailingIcon: false,
                         onExpansionChanged: (bool expanded) {
@@ -242,14 +233,21 @@ class _WorkoutScreenState extends State<WorkoutScreen>
                             _expanded[0] = expanded;
                           });
                         },
-                        title: Text('Clean Tile'),
+                        title: Text(
+                          'Clean Tile',
+                          style: TextStyle(color: Palette.inverseDimThemeColor),
+                        ),
                         children: [
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Detail 1'),
+                                Text(
+                                  'Detail 1',
+                                  style: TextStyle(
+                                      color: Palette.inverseThemeColor),
+                                ),
                                 SizedBox(height: 8),
                                 Text('Detail 2'),
                               ],
