@@ -1,6 +1,6 @@
 # Current state: incremental development
 
-# benchy
+# SetForge
 
 > The best workout app.
 
