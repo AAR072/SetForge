@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:setforge/database/dao/exercise_dao.dart';
+import 'package:setforge/database/dao/movement_dao.dart';
 import 'package:setforge/database/models.dart';
 import 'package:setforge/database/db_helper.dart';
 import 'package:setforge/database/dao/workout_dao.dart';
@@ -16,7 +17,21 @@ void main() {
   final dbHelper = DatabaseHelper.instance;
   final workoutDao = WorkoutDao.instance;
   final exerciseDao = ExerciseDao.instance;
-  final testMovement = Movement(
+  // Before each test, delete any existing database file so that
+  // we start with a fresh copy of the database.
+  setUp(() async {
+    await dbHelper.database;
+    // Reinitialize the database (this will create the tables again)
+  });
+
+
+  // After each test, delete the database file.
+  tearDown(() async {
+  await dbHelper.deleteDatabaseFile();
+  });
+
+  group('Model Conversion Tests', () {
+      final testMovement = Movement(
     name: "Bench",
     type: "Weight",
     oneRepMax: 0,
@@ -31,28 +46,17 @@ void main() {
     maxSetVolume: 100,
     equipment: "bench",
     completionCount: 10,
+    id: 1,
   );
+  dbHelper.database;
+  MovementDao.instance.insertMovement(testMovement);
 
-  // Before each test, delete any existing database file so that
-  // we start with a fresh copy of the database.
-  setUp(() async {
-    await dbHelper.deleteDatabaseFile();
-    // Reinitialize the database (this will create the tables again)
-    await dbHelper.database;
-  });
-
-
-  // After each test, delete the database file.
-  tearDown(() async {
-  });
-
-  group('Model Conversion Tests', () {
     const MethodChannel channel = MethodChannel('plugins.flutter.io/path_provider');
     TestDefaultBinaryMessengerBinding.instance?.defaultBinaryMessenger
     .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
       return ".";
     });
-    test('Exercise toMap and fromMap', () {
+    test('Exercise toMap and fromMap', () async {
       final now = DateTime.now();
       final exercise = Exercise(
         id: 3,
@@ -63,7 +67,7 @@ void main() {
         restTime: 90,
         notes: 'Focus on form',
         date: now,
-        volume: 300.0,
+        volume: 300,
       );
 
       final map = exercise.toMap();
@@ -76,7 +80,7 @@ void main() {
       expect(map['date'], equals(now.toIso8601String()));
       expect(map['volume'], equals(exercise.volume));
 
-      final exerciseFromMap = Exercise.fromMap(map);
+      final exerciseFromMap = await Exercise.fromMapAsync(map);
       expect(exerciseFromMap.category, equals(exercise.category));
       expect(exerciseFromMap.movement.id, equals(exercise.movement.id));
       expect(exerciseFromMap.workoutId, equals(exercise.workoutId));
@@ -110,6 +114,7 @@ void main() {
 
       Future<int> createMovement() async {
         final movement = Movement(
+          id: 1,
           name: 'Test Movement',
           type: 'Strength',
           oneRepMax: 100.0,

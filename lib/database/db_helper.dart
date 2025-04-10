@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:path_provider/path_provider.dart';
+import 'package:path_provider_linux/path_provider_linux.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -15,6 +18,7 @@ class DatabaseHelper {
   }
 
   Future<Database> _initDB(String filePath) async {
+    if (Platform.isLinux) PathProviderLinux.registerWith();
     final dbPath = await getApplicationDocumentsDirectory();
     final path = join(dbPath.path, filePath);
       // Check if the directory exists, if not, create it

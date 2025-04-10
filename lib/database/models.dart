@@ -1,4 +1,6 @@
-import 'dart:convert'; // For JSON encoding/decoding
+import 'dart:convert';
+
+import 'package:setforge/database/dao/movement_dao.dart'; // For JSON encoding/decoding
 
 class Workout {
   final int? id;
@@ -57,7 +59,7 @@ class Workout {
 }
 
 class Movement {
-  final int? id;
+  final int id;
   final String name;
   final String type;
   final double oneRepMax;
@@ -71,7 +73,7 @@ class Movement {
   final int completionCount;
 
   Movement({
-    this.id,
+    required this.id,
     required this.name,
     required this.type,
     required this.oneRepMax,
@@ -202,19 +204,20 @@ class Exercise {
   }
 
   // Create an Exercise object from a Map
-  factory Exercise.fromMap(Map<String, dynamic> map) {
-    return Exercise(
-      id: map['id'],
-      category: map['category'],
-      movement: map['movement_id'],
-      workoutId: map['workout_id'],
-      orderIndex: map['order_index'],
-      restTime: map['restTime'],
-      notes: map['notes'],
-      date: DateTime.parse(map['date']),
-      volume: map['volume'],
-    );
-  }
+static Future<Exercise> fromMapAsync(Map<String, dynamic> map) async {
+  final movement = await MovementDao.instance.getMovement(map['movement_id']);
+  return Exercise(
+    id: map['id'],
+    category: map['category'],
+    movement: movement[0],
+    workoutId: map['workout_id'],
+    orderIndex: map['order_index'],
+    restTime: map['restTime'],
+    notes: map['notes'],
+    date: DateTime.parse(map['date']),
+    volume: map['volume'],
+  );
+}
 }
 
 class WorkoutSet {

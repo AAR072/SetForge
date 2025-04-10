@@ -36,7 +36,12 @@ class ExerciseDao {
       'Exercise',
       orderBy: 'date DESC',
     );
-    return List.generate(maps.length, (i) => Exercise.fromMap(maps[i]));
+    // Convert each map to a Future<Exercise>, then await them all
+    final exercises = await Future.wait(
+      maps.map((map) => Exercise.fromMapAsync(map)),
+    );
+
+    return exercises;
   }
 
   /// Retrieves [Exercise]s for a specific workout.
@@ -55,7 +60,12 @@ class ExerciseDao {
       whereArgs: [workoutId],
       orderBy: 'order_index ASC',
     );
-    return List.generate(maps.length, (i) => Exercise.fromMap(maps[i]));
+    // Convert each map to a Future<Exercise>, then await them all
+    final exercises = await Future.wait(
+      maps.map((map) => Exercise.fromMapAsync(map)),
+    );
+
+    return exercises;
   }
 
   /// Retrieves [Exercise]s for a specific movement.
@@ -74,7 +84,12 @@ class ExerciseDao {
       whereArgs: [movementId],
       orderBy: 'date DESC',
     );
-    return List.generate(maps.length, (i) => Exercise.fromMap(maps[i]));
+    // Convert each map to a Future<Exercise>, then await them all
+    final exercises = await Future.wait(
+      maps.map((map) => Exercise.fromMapAsync(map)),
+    );
+
+    return exercises;
   }
 
   /// Updates an [Exercise] in the database.
@@ -122,6 +137,12 @@ class ExerciseDao {
       where: 'id = ?',
       whereArgs: [id],
     );
-    return List.generate(maps.length, (i) => Exercise.fromMap(maps[i]));
+
+    // Convert each map to a Future<Exercise>, then await them all
+    final exercises = await Future.wait(
+      maps.map((map) => Exercise.fromMapAsync(map)),
+    );
+
+    return exercises;
   }
 }

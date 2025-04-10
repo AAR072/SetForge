@@ -32,7 +32,7 @@ class MovementDao{
   Future<List<Movement>> getAllMovements() async {
     final db = await _dbHelper.database;
     final List<Map<String, dynamic>> maps = await db.query(
-      'Movement',
+      'Movements',
       orderBy: 'date DESC',
     );
     return List.generate(maps.length, (i) => Movement.fromMap(maps[i]));
@@ -54,7 +54,12 @@ class MovementDao{
       whereArgs: [movementId],
       orderBy: 'order_index ASC',
     );
-    return List.generate(maps.length, (i) => Exercise.fromMap(maps[i]));
+    // Convert each map to a Future<Exercise>, then await them all
+    final exercises = await Future.wait(
+      maps.map((map) => Exercise.fromMapAsync(map)),
+    );
+
+    return exercises;
   }
 
   /// Retrieves [Maxes]s for a specific movement.
@@ -87,7 +92,7 @@ class MovementDao{
   Future<int> updateMovement(Movement movement) async {
     final db = await _dbHelper.database;
     return await db.update(
-      'Movement',
+      'Movements',
       movement.toMap(),
       where: 'id = ?',
       whereArgs: [movement.id],
@@ -105,7 +110,7 @@ class MovementDao{
   Future<int> deleteMovement(int id) async {
     final db = await _dbHelper.database;
     return await db.delete(
-      'Movement',
+      'Movements',
       where: 'id = ?',
       whereArgs: [id],
     );
@@ -117,7 +122,7 @@ class MovementDao{
   Future<List<Movement>> getMovement(int id) async {
     final db = await _dbHelper.database;
     final List<Map<String, Object?>> maps = await db.query(
-      'Movement',
+      'Movements',
       where: 'id = ?',
       whereArgs: [id],
     );
