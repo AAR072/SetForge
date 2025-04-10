@@ -9,10 +9,12 @@ class Workout {
   final double volume;
   final int? rating;
   final int caloriesBurned;
+  List<Exercise> exercises;
 
-/// The [duration] is in seconds
-/// The [volume] is in lbs 
-/// The [caloriesBurned] are 0 by default; 
+
+  /// The [duration] is in seconds
+  /// The [volume] is in lbs
+  /// The [caloriesBurned] are 0 by default;
   Workout({
     this.id,
     this.rating,
@@ -22,7 +24,8 @@ class Workout {
     required this.volume,
     this.notes = "",
     this.caloriesBurned = 0,
-  });
+    List<Exercise>? exercises,
+  }) : exercises = exercises ?? [];
 
   // Convert a Workout object into a Map
   Map<String, dynamic> toMap() {
@@ -60,7 +63,7 @@ class Movement {
   final double oneRepMax;
   final Map<String, dynamic> muscleGroups;
   final String instructions;
-  final String imageUrl;
+  String imageUrl;
   final double maxWeight;
   final double maxSessionVolume;
   final double maxSetVolume;
@@ -74,12 +77,12 @@ class Movement {
     required this.oneRepMax,
     required this.muscleGroups,
     required this.instructions,
-    required this.imageUrl,
     required this.maxWeight,
     required this.maxSessionVolume,
     required this.maxSetVolume,
     required this.equipment,
     required this.completionCount,
+    this.imageUrl = "",
   });
 
   // Convert a Movement object into a Map
@@ -161,32 +164,34 @@ class Exercise {
   final int? id;
   /// Warmup, Working, Failure, Injury
   final String category;
-  final int movementId;
+  final Movement movement;
   final int workoutId;
   final int orderIndex;
   final int restTime;
   final String notes;
   final DateTime date;
   final double volume;
+  List<WorkoutSet> sets;
 
   Exercise({
     this.id,
     required this.category,
-    required this.movementId,
+    required this.movement,
     required this.workoutId,
     required this.orderIndex,
     required this.restTime,
     required this.notes,
     required this.date,
     required this.volume,
-  });
+    List<WorkoutSet>? sets,
+  }) : sets = sets ?? [];
 
   // Convert an Exercise object into a Map
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'category': category,
-      'movement_id': movementId,
+      'movement_id': movement.id,
       'workout_id': workoutId,
       'order_index': orderIndex,
       'restTime': restTime,
@@ -201,7 +206,7 @@ class Exercise {
     return Exercise(
       id: map['id'],
       category: map['category'],
-      movementId: map['movement_id'],
+      movement: map['movement_id'],
       workoutId: map['workout_id'],
       orderIndex: map['order_index'],
       restTime: map['restTime'],

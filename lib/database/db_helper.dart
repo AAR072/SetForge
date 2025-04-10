@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -12,7 +10,7 @@ class DatabaseHelper {
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDB('benchy.db');
+    _database = await _initDB('setforge.db');
     return _database!;
   }
 
@@ -162,7 +160,7 @@ class DatabaseHelper {
 /// Deletes the entire [Database]. It must be reinitialized with a getter.
 Future<void> deleteDatabaseFile() async {
   final dbPath = await getApplicationDocumentsDirectory();
-  final path = join(dbPath.path, 'benchy.db');
+  final path = join(dbPath.path, 'setforge.db');
 
   // Close the existing database connection
   if (_database != null) {

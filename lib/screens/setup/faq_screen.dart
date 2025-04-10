@@ -1,4 +1,4 @@
-import 'package:benchy/styling/colors.dart';
+import 'package:setforge/styling/colors.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -42,26 +42,26 @@ class _FaqScreenState extends State<FaqScreen> {
       'answer':
           'Benchy does not automatically sync or store your data in the cloud. To backup your progress, you can export your data from the settings menu and save it to a secure location. You can then import this data back into the app if needed.',
       'icon': 'sync',
-      'link': 'https://github.com/AAR072/benchy/wiki/syncing'
+      'link': 'https://github.com/AAR072/setforge/wiki/syncing'
     },
     {
       'question': 'Can you add____?',
       'answer':
           'We are open to feature requests. Please tell us what you want us to hear.',
       'icon': 'feature',
-      'link': 'https://github.com/AAR072/benchy/wiki/request'
+      'link': 'https://github.com/AAR072/setforge/wiki/request'
     },
     {
       'question': 'Is the code open-source?',
       'answer': 'Yes, Benchy\'s code is open-source and available on GitHub.',
-      'link': 'https://github.com/AAR072/benchy',
+      'link': 'https://github.com/AAR072/setforge',
       'icon': 'code',
     },
     {
       'question': 'How can I contribute to the app?',
       'answer':
           'We welcome contributions! You can submit bug reports, suggest features, or contribute code.',
-      'link': 'https://github.com/AAR072/benchy/wiki/contributing',
+      'link': 'https://github.com/AAR072/setforge/wiki/contributing',
       'icon': 'group_add',
     },
   ];

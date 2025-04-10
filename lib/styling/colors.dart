@@ -1,4 +1,4 @@
-import 'package:benchy/prefs.dart';
+import 'package:setforge/prefs.dart';
 import 'package:flutter/material.dart';
 
 class Palette {

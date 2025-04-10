@@ -1,12 +1,12 @@
-import 'package:benchy/prefs.dart';
-import 'package:benchy/router.dart';
+import 'package:setforge/prefs.dart';
+import 'package:setforge/router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:benchy/database/db_helper.dart';
+import 'package:setforge/database/db_helper.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:benchy/styling/theme.dart';
-
+import 'package:setforge/styling/theme.dart';
 Future main() async {
   // Init the DB
   sqfliteFfiInit();
@@ -29,7 +29,9 @@ Future main() async {
   await SharedPrefsHelper.init();
     runApp(
     Phoenix(
-      child: MyApp(),
+      child: ProviderScope(child:
+      MyApp(),
+)
     ),
   );
 }
@@ -40,7 +42,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Benchy',
+      title: 'SetForge',
       theme: SharedPrefsHelper.isDarkMode? macroFactorDarkTheme : macroFactorLightTheme,
       routerConfig: router,
     );

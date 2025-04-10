@@ -1,0 +1,2 @@
+/home/aa/development/SetForge/android/app/.cxx/Debug/2r4q4n2u/x86_64/CMakeFiles/edit_cache.dir
+/home/aa/development/SetForge/android/app/.cxx/Debug/2r4q4n2u/x86_64/CMakeFiles/rebuild_cache.dir

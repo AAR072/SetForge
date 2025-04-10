@@ -1,0 +1,2 @@
+/home/aa/development/SetForge/android/app/.cxx/RelWithDebInfo/5g445n6p/arm64-v8a/CMakeFiles/edit_cache.dir
+/home/aa/development/SetForge/android/app/.cxx/RelWithDebInfo/5g445n6p/arm64-v8a/CMakeFiles/rebuild_cache.dir
