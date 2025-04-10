@@ -18,6 +18,7 @@ void main() {
   final workoutDao = WorkoutDao.instance;
   final exerciseDao = ExerciseDao.instance;
   final testMovement = Movement(
+    id: 0,
     name: "Bench",
     type: "Weight",
     oneRepMax: 0,
