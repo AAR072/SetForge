@@ -1,10 +1,10 @@
 // test/database_test.dart
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import 'package:setforge/database/exercise_dao.dart';
+import 'package:setforge/database/dao/exercise_dao.dart';
 import 'package:setforge/database/models.dart';
 import 'package:setforge/database/db_helper.dart';
-import 'package:setforge/database/workout_dao.dart';
+import 'package:setforge/database/dao/workout_dao.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
