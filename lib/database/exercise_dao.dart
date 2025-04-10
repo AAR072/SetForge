@@ -1,6 +1,6 @@
 // lib/database/exercise_dao.dart
-import 'package:benchy/database/db_helper.dart';
-import 'package:benchy/database/models.dart';
+import 'package:setforge/database/db_helper.dart';
+import 'package:setforge/database/models.dart';
 
 /// A Data Access Object (DAO) for managing [Exercise] entities in the database.
 class ExerciseDao {
@@ -63,7 +63,7 @@ class ExerciseDao {
   /// Parameters:
   /// - [movementId]: The ID of the movement to fetch exercises for.
   ///
-  /// Returns a list of [Exercise] objects sorted by date.
+  /// Returns a list of [Exercise] objects sorted by date.dao
   ///
   /// Throws a [DatabaseException] if the query fails.
   Future<List<Exercise>> getExercisesForMovement(int movementId) async {
@@ -113,7 +113,7 @@ class ExerciseDao {
   }
 
   /// Gets a specific [Exercise] from the database from its ID.
-  /// 
+  ///
   /// Returns an empty list if none found
   Future<List<Exercise>> getExercise(int id) async {
     final db = await _dbHelper.database;

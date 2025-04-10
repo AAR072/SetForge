@@ -1,5 +1,5 @@
-import 'package:benchy/database/db_helper.dart';
-import 'package:benchy/database/models.dart';
+import 'package:setforge/database/db_helper.dart';
+import 'package:setforge/database/models.dart';
 
 /// A Data Access Object (DAO) for managing [Workout] entities in the database.
 class WorkoutDao {
@@ -62,7 +62,7 @@ class WorkoutDao {
   }
 
   /// Gets a specific [Workout] from the database from its ID.
-  /// 
+  ///
   /// Returns an empty list if none found
   Future<List<Workout>> getWorkout(int id) async {
     final db = await _dbHelper.database;

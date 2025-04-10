@@ -1,4 +1,4 @@
-import 'package:benchy/styling/colors.dart';
+import 'package:setforge/styling/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -12,7 +12,7 @@ class WorkoutScreen extends StatefulWidget {
 class _WorkoutScreenState extends State<WorkoutScreen>
     with TickerProviderStateMixin {
   late AnimationController _opacityController;
-  final List<bool> _expanded = List.generate(1, (_) => false);
+  final List<bool> _expanded = List.generate(2, (_) => false);
   final List<double> _opacity = List.generate(1, (_) => 1.00);
   @override
   void initState() {
@@ -235,6 +235,71 @@ class _WorkoutScreenState extends State<WorkoutScreen>
                         },
                         title: Text(
                           'Clean Tile',
+                          style: TextStyle(color: Palette.inverseDimThemeColor),
+                        ),
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Detail 1',
+                                  style: TextStyle(
+                                      color: Palette.inverseThemeColor),
+                                ),
+                                SizedBox(height: 8),
+                                Text('Detail 2'),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Theme(
+                  data: Theme.of(context).copyWith(
+                    splashFactory: NoSplash.splashFactory,
+                    highlightColor:
+                        Colors.transparent, // no grey background when tapped
+                  ),
+                  child: GestureDetector(
+                    onTap: () {
+                      // Fade-out effect
+                      setState(() {
+                        _opacity[0] = 0.5;
+                      });
+                      Future.delayed(Duration(milliseconds: 100), () {
+                        setState(() {
+                          _opacity[0] = 1.0;
+                        });
+                      });
+                    },
+                    child: AnimatedOpacity(
+                      duration: Duration(milliseconds: 150),
+                      opacity: _opacity[0],
+                      child: ExpansionTile(
+                        backgroundColor: Colors.transparent,
+                        collapsedBackgroundColor: Colors.transparent,
+                        tilePadding:
+                            EdgeInsets.zero, // optional: remove side padding
+                        childrenPadding:
+                            EdgeInsets.zero, // optional: clean spacing inside
+                        leading: Icon(
+                          _expanded[1]
+                              ? Icons.keyboard_arrow_down
+                              : Icons.keyboard_arrow_right_sharp,
+                          color: Palette.inverseDimThemeColor,
+                        ),
+                        showTrailingIcon: false,
+                        onExpansionChanged: (bool expanded) {
+                          setState(() {
+                            _expanded[1] = expanded;
+                          });
+                        },
+                        title: Text(
+                          'All Routines',
                           style: TextStyle(color: Palette.inverseDimThemeColor),
                         ),
                         children: [

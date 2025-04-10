@@ -1,5 +1,5 @@
-import 'package:benchy/prefs.dart';
-import 'package:benchy/styling/colors.dart';
+import 'package:setforge/prefs.dart';
+import 'package:setforge/styling/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 

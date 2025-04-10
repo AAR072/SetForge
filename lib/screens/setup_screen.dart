@@ -1,4 +1,4 @@
-import 'package:benchy/styling/colors.dart';
+import 'package:setforge/styling/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
