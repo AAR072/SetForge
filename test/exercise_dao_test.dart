@@ -7,6 +7,36 @@ import 'package:setforge/database/dao/workout_dao.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
+Future<int> createWorkout() async {
+  final workout = Workout(
+    title: 'Test Workout',
+    date: DateTime.now(),
+    duration: 60,
+    notes: 'Test notes',
+    volume: 1000.0,
+    rating: 7,
+    caloriesBurned: 250,
+  );
+  return await WorkoutDao.instance.insertWorkout(workout);
+}
+
+Future<int> createMovement() async {
+  final movement = Movement(
+    id: 1,
+    name: 'Test Movement',
+    type: 'Strength',
+    oneRepMax: 100.0,
+    muscleGroups: {'primary': 'Chest'},
+    instructions: 'Test instructions',
+    imageUrl: '',
+    maxWeight: 100.0,
+    maxSessionVolume: 1000.0,
+    maxSetVolume: 200.0,
+    equipment: 'Barbell',
+    completionCount: 0,
+  );
+  return await MovementDao.instance.insertMovement(movement);
+}
 
 
 void main() {
@@ -27,29 +57,29 @@ void main() {
 
   // After each test, delete the database file.
   tearDown(() async {
-  await dbHelper.deleteDatabaseFile();
+    await dbHelper.deleteDatabaseFile();
   });
 
   group('Model Conversion Tests', () {
-      final testMovement = Movement(
-    name: "Bench",
-    type: "Weight",
-    oneRepMax: 0,
-    muscleGroups: {
-    'chest': {'importance': 'high', 'target_area': 'upper body'},
-    'shoulders': {'importance': 'medium', 'target_area': 'upper body'},
-  },
-    instructions: "Don't die",
-    imageUrl: "/",
-    maxWeight: 100,
-    maxSessionVolume: 100,
-    maxSetVolume: 100,
-    equipment: "bench",
-    completionCount: 10,
-    id: 1,
-  );
-  dbHelper.database;
-  MovementDao.instance.insertMovement(testMovement);
+    final testMovement = Movement(
+      name: "Bench",
+      type: "Weight",
+      oneRepMax: 0,
+      muscleGroups: {
+      'chest': {'importance': 'high', 'target_area': 'upper body'},
+      'shoulders': {'importance': 'medium', 'target_area': 'upper body'},
+    },
+      instructions: "Don't die",
+      imageUrl: "/",
+      maxWeight: 100,
+      maxSessionVolume: 100,
+      maxSetVolume: 100,
+      equipment: "bench",
+      completionCount: 10,
+      id: 1,
+    );
+    dbHelper.database;
+    MovementDao.instance.insertMovement(testMovement);
 
     const MethodChannel channel = MethodChannel('plugins.flutter.io/path_provider');
     TestDefaultBinaryMessengerBinding.instance?.defaultBinaryMessenger
@@ -99,36 +129,6 @@ void main() {
         db = await dbHelper.database;
       });
 
-      Future<int> createWorkout() async {
-        final workout = Workout(
-          title: 'Test Workout',
-          date: DateTime.now(),
-          duration: 60,
-          notes: 'Test notes',
-          volume: 1000.0,
-          rating: 7,
-          caloriesBurned: 250,
-        );
-        return await workoutDao.insertWorkout(workout);
-      }
-
-      Future<int> createMovement() async {
-        final movement = Movement(
-          id: 1,
-          name: 'Test Movement',
-          type: 'Strength',
-          oneRepMax: 100.0,
-          muscleGroups: {'primary': 'Chest'},
-          instructions: 'Test instructions',
-          imageUrl: '',
-          maxWeight: 100.0,
-          maxSessionVolume: 1000.0,
-          maxSetVolume: 200.0,
-          equipment: 'Barbell',
-          completionCount: 0,
-        );
-        return await db.insert('Movements', movement.toMap());
-      }
 
       test('Inserting and retrieving an Exercise', () async {
         final workoutId = await createWorkout();
