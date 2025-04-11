@@ -59,7 +59,6 @@ class Workout {
 }
 
 class Movement {
-  final int id;
   final String name;
   final String type;
   final double oneRepMax;
@@ -71,38 +70,44 @@ class Movement {
   final double maxSetVolume;
   final String equipment;
   final int completionCount;
+  final int? id;
 
   Movement({
-    required this.id,
+    this.id,
     required this.name,
     required this.type,
     required this.oneRepMax,
     required this.muscleGroups,
     required this.instructions,
+    this.imageUrl = "",
     required this.maxWeight,
     required this.maxSessionVolume,
     required this.maxSetVolume,
     required this.equipment,
     required this.completionCount,
-    this.imageUrl = "",
   });
 
   // Convert a Movement object into a Map
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'type': type,
-      'one_rep_max': oneRepMax,
-      'muscleGroups': jsonEncode(muscleGroups), // Convert JSON to string
-      'instructions': instructions,
-      'imageUrl': imageUrl,
-      'maxWeight': maxWeight,
-      'maxSessionVolume': maxSessionVolume,
-      'maxSetVolume': maxSetVolume,
-      'equipment': equipment,
-      'completion_count': completionCount,
-    };
+  Map<String, dynamic> toMap({bool includeId = false}) {
+    final map = {
+    'name': name,
+    'type': type,
+    'one_rep_max': oneRepMax,
+    'muscleGroups': jsonEncode(muscleGroups),
+    'instructions': instructions,
+    'imageUrl': imageUrl,
+    'maxWeight': maxWeight,
+    'maxSessionVolume': maxSessionVolume,
+    'maxSetVolume': maxSetVolume,
+    'equipment': equipment,
+    'completion_count': completionCount,
+  };
+
+    if (includeId) {
+    map['id'] = id as Object;
+  }
+
+    return map;
   }
 
   // Create a Movement object from a Map
@@ -204,20 +209,20 @@ class Exercise {
   }
 
   // Create an Exercise object from a Map
-static Future<Exercise> fromMapAsync(Map<String, dynamic> map) async {
-  final movement = await MovementDao.instance.getMovement(map['movement_id']);
-  return Exercise(
-    id: map['id'],
-    category: map['category'],
-    movement: movement[0],
-    workoutId: map['workout_id'],
-    orderIndex: map['order_index'],
-    restTime: map['restTime'],
-    notes: map['notes'],
-    date: DateTime.parse(map['date']),
-    volume: map['volume'],
-  );
-}
+  static Future<Exercise> fromMapAsync(Map<String, dynamic> map) async {
+    final movement = await MovementDao.instance.getMovement(map['movement_id']);
+    return Exercise(
+      id: map['id'],
+      category: map['category'],
+      movement: movement[0],
+      workoutId: map['workout_id'],
+      orderIndex: map['order_index'],
+      restTime: map['restTime'],
+      notes: map['notes'],
+      date: DateTime.parse(map['date']),
+      volume: map['volume'],
+    );
+  }
 }
 
 class WorkoutSet {

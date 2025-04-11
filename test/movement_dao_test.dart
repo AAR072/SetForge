@@ -19,7 +19,6 @@ void main() {
   final workoutDao = WorkoutDao.instance;
   final exerciseDao = ExerciseDao.instance;
   final testMovement = Movement(
-    id: 0,
     name: "Bench",
     type: "Weight",
     oneRepMax: 0,
@@ -62,7 +61,6 @@ void main() {
       'secondary': 'Triceps',
     };
       final movement = Movement(
-        id: 10,
         name: 'Bench Press',
         type: 'Strength',
         oneRepMax: 200.0,
@@ -89,63 +87,12 @@ void main() {
       expect(movementFromMap.oneRepMax, equals(movement.oneRepMax));
       expect(movementFromMap.muscleGroups, equals(muscleGroups));
     });
-    test('Movement Deletions', () async {
-      final muscleGroups = {
-      'primary': 'Chest',
-      'secondary': 'Triceps',
-    };
-      final movement = Movement(
-        id: 10,
-        name: 'Bench Press',
-        type: 'Strength',
-        oneRepMax: 200.0,
-        muscleGroups: muscleGroups,
-        instructions: 'Keep your elbows tucked in.',
-        imageUrl: 'http://example.com/bench.png',
-        maxWeight: 250.0,
-        maxSessionVolume: 1000.0,
-        maxSetVolume: 250.0,
-        equipment: 'Barbell',
-        completionCount: 15,
-      );
-      final fake = Movement(
-        id: 1,
-        name: 'Fake Bench Press',
-        type: 'Fake  Strength',
-        oneRepMax: 199.0,
-        muscleGroups: muscleGroups,
-        instructions: 'Keep your elbows not tucked in.',
-        imageUrl: 'https://example.com/fakebench.png',
-        maxWeight: 249.0,
-        maxSessionVolume: 999.0,
-        maxSetVolume: 249.0,
-        equipment: 'Fake barbell',
-        completionCount: 14,
-      );
-      MovementDao.instance.insertMovement(movement);
-      MovementDao.instance.insertMovement(fake);
-      final retrived = await MovementDao.instance.getMovement(movement.id);
-      expect(movement.id, retrived[0].id);
-      expect(movement.name, retrived[0].name);
-      expect(movement.type, retrived[0].type);
-      expect(movement.oneRepMax, retrived[0].oneRepMax);
-      expect(movement.muscleGroups, retrived[0].muscleGroups);
-      expect(movement.instructions, retrived[0].instructions);
-      expect(movement.imageUrl, retrived[0].imageUrl);
-      expect(movement.maxWeight, retrived[0].maxWeight);
-      expect(movement.maxSessionVolume, retrived[0].maxSessionVolume);
-      expect(movement.maxSetVolume, retrived[0].maxSetVolume);
-      expect(movement.equipment, retrived[0].equipment);
-      expect(movement.completionCount, retrived[0].completionCount);
-
-    });
     test('Movement insertions', () async {
       final muscleGroups = {
       'primary': 'Chest',
       'secondary': 'Triceps',
     };
       final movement = Movement(
-        id: 10,
         name: 'Bench Press',
         type: 'Strength',
         oneRepMax: 200.0,
@@ -159,7 +106,6 @@ void main() {
         completionCount: 15,
       );
       final fake = Movement(
-        id: 1,
         name: 'Fake Bench Press',
         type: 'Fake  Strength',
         oneRepMax: 199.0,
@@ -172,10 +118,10 @@ void main() {
         equipment: 'Fake barbell',
         completionCount: 14,
       );
-      MovementDao.instance.insertMovement(movement);
-      MovementDao.instance.insertMovement(fake);
-      final retrived = await MovementDao.instance.getMovement(movement.id);
-      expect(movement.id, retrived[0].id);
+      final int movementId = await MovementDao.instance.insertMovement(movement);
+      await MovementDao.instance.insertMovement(fake);
+      final retrived = await MovementDao.instance.getMovement(movementId);
+      expect(movementId, retrived[0].id);
       expect(movement.name, retrived[0].name);
       expect(movement.type, retrived[0].type);
       expect(movement.oneRepMax, retrived[0].oneRepMax);
