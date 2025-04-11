@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:setforge/database/dao/exercise_dao.dart';
+import 'package:setforge/database/dao/movement_dao.dart';
 import 'package:setforge/database/models.dart';
 import 'package:setforge/database/db_helper.dart';
 import 'package:setforge/database/dao/workout_dao.dart';
@@ -34,11 +35,11 @@ void main() {
     equipment: "bench",
     completionCount: 10,
   );
+  MovementDao.instance.insertMovement(testMovement);
 
   // Before each test, delete any existing database file so that
   // we start with a fresh copy of the database.
   setUp(() async {
-    await dbHelper.deleteDatabaseFile();
     // Reinitialize the database (this will create the tables again)
     await dbHelper.database;
   });
@@ -46,6 +47,7 @@ void main() {
 
   // After each test, delete the database file.
   tearDown(() async {
+    await dbHelper.deleteDatabaseFile();
   });
 
   group('Model Conversion Tests', () {
@@ -86,6 +88,106 @@ void main() {
       expect(movementFromMap.type, equals(movement.type));
       expect(movementFromMap.oneRepMax, equals(movement.oneRepMax));
       expect(movementFromMap.muscleGroups, equals(muscleGroups));
+    });
+    test('Movement Deletions', () async {
+      final muscleGroups = {
+      'primary': 'Chest',
+      'secondary': 'Triceps',
+    };
+      final movement = Movement(
+        id: 10,
+        name: 'Bench Press',
+        type: 'Strength',
+        oneRepMax: 200.0,
+        muscleGroups: muscleGroups,
+        instructions: 'Keep your elbows tucked in.',
+        imageUrl: 'http://example.com/bench.png',
+        maxWeight: 250.0,
+        maxSessionVolume: 1000.0,
+        maxSetVolume: 250.0,
+        equipment: 'Barbell',
+        completionCount: 15,
+      );
+      final fake = Movement(
+        id: 1,
+        name: 'Fake Bench Press',
+        type: 'Fake  Strength',
+        oneRepMax: 199.0,
+        muscleGroups: muscleGroups,
+        instructions: 'Keep your elbows not tucked in.',
+        imageUrl: 'https://example.com/fakebench.png',
+        maxWeight: 249.0,
+        maxSessionVolume: 999.0,
+        maxSetVolume: 249.0,
+        equipment: 'Fake barbell',
+        completionCount: 14,
+      );
+      MovementDao.instance.insertMovement(movement);
+      MovementDao.instance.insertMovement(fake);
+      final retrived = await MovementDao.instance.getMovement(movement.id);
+      expect(movement.id, retrived[0].id);
+      expect(movement.name, retrived[0].name);
+      expect(movement.type, retrived[0].type);
+      expect(movement.oneRepMax, retrived[0].oneRepMax);
+      expect(movement.muscleGroups, retrived[0].muscleGroups);
+      expect(movement.instructions, retrived[0].instructions);
+      expect(movement.imageUrl, retrived[0].imageUrl);
+      expect(movement.maxWeight, retrived[0].maxWeight);
+      expect(movement.maxSessionVolume, retrived[0].maxSessionVolume);
+      expect(movement.maxSetVolume, retrived[0].maxSetVolume);
+      expect(movement.equipment, retrived[0].equipment);
+      expect(movement.completionCount, retrived[0].completionCount);
+
+    });
+    test('Movement insertions', () async {
+      final muscleGroups = {
+      'primary': 'Chest',
+      'secondary': 'Triceps',
+    };
+      final movement = Movement(
+        id: 10,
+        name: 'Bench Press',
+        type: 'Strength',
+        oneRepMax: 200.0,
+        muscleGroups: muscleGroups,
+        instructions: 'Keep your elbows tucked in.',
+        imageUrl: 'http://example.com/bench.png',
+        maxWeight: 250.0,
+        maxSessionVolume: 1000.0,
+        maxSetVolume: 250.0,
+        equipment: 'Barbell',
+        completionCount: 15,
+      );
+      final fake = Movement(
+        id: 1,
+        name: 'Fake Bench Press',
+        type: 'Fake  Strength',
+        oneRepMax: 199.0,
+        muscleGroups: muscleGroups,
+        instructions: 'Keep your elbows not tucked in.',
+        imageUrl: 'https://example.com/fakebench.png',
+        maxWeight: 249.0,
+        maxSessionVolume: 999.0,
+        maxSetVolume: 249.0,
+        equipment: 'Fake barbell',
+        completionCount: 14,
+      );
+      MovementDao.instance.insertMovement(movement);
+      MovementDao.instance.insertMovement(fake);
+      final retrived = await MovementDao.instance.getMovement(movement.id);
+      expect(movement.id, retrived[0].id);
+      expect(movement.name, retrived[0].name);
+      expect(movement.type, retrived[0].type);
+      expect(movement.oneRepMax, retrived[0].oneRepMax);
+      expect(movement.muscleGroups, retrived[0].muscleGroups);
+      expect(movement.instructions, retrived[0].instructions);
+      expect(movement.imageUrl, retrived[0].imageUrl);
+      expect(movement.maxWeight, retrived[0].maxWeight);
+      expect(movement.maxSessionVolume, retrived[0].maxSessionVolume);
+      expect(movement.maxSetVolume, retrived[0].maxSetVolume);
+      expect(movement.equipment, retrived[0].equipment);
+      expect(movement.completionCount, retrived[0].completionCount);
+
     });
   });
 }

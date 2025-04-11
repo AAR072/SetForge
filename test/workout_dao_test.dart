@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:setforge/database/dao/exercise_dao.dart';
+import 'package:setforge/database/dao/movement_dao.dart';
 import 'package:setforge/database/models.dart';
 import 'package:setforge/database/db_helper.dart';
 import 'package:setforge/database/dao/workout_dao.dart';
@@ -16,6 +17,7 @@ void main() {
   final workoutDao = WorkoutDao.instance;
   final exerciseDao = ExerciseDao.instance;
     final testMovement = Movement(
+    id: 0,
     name: "Bench",
     type: "Weight",
     oneRepMax: 0,
@@ -31,18 +33,18 @@ void main() {
     equipment: "bench",
     completionCount: 10,
   );
-
+  MovementDao.instance.insertMovement(testMovement);
   // Before each test, delete any existing database file so that
   // we start with a fresh copy of the database.
   setUp(() async {
-    await dbHelper.deleteDatabaseFile();
-    // Reinitialize the database (this will create the tables again)
     await dbHelper.database;
+    // Reinitialize the database (this will create the tables again)
   });
 
 
   // After each test, delete the database file.
   tearDown(() async {
+    await dbHelper.deleteDatabaseFile();
   });
 
   group('Database Integration Tests', () {
