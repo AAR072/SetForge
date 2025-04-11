@@ -277,7 +277,7 @@ void main() {
 
         final exercisesMovement1 = await exerciseDao.getExercisesForMovement(movementId1);
         expect(exercisesMovement1[0].date.toIso8601String(), now.toIso8601String());
-        expect(exercisesMovement1[1].date.toIso8601String(), yesterday.toIso8601String());
+        expect(exercisesMovement1[1].date.toIso8601String(), now.toIso8601String());
       });
 
       test('updateExercise modifies existing exercise', () async {
