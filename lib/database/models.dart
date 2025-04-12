@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:setforge/database/dao/movement_dao.dart'; // For JSON encoding/decoding
 
@@ -30,17 +31,20 @@ class Workout {
   }) : exercises = exercises ?? [];
 
   // Convert a Workout object into a Map
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'title': title,
-      'date': date.toIso8601String(),
-      'duration': duration,
-      'notes': notes,
-      'volume': volume,
-      'rating': rating,
-      'calories_burned': caloriesBurned,
-    };
+  Map<String, dynamic> toMap({bool includeId = false})  {
+    final map = {
+    'title': title,
+    'date': date.toIso8601String(),
+    'duration': duration,
+    'notes': notes,
+    'volume': volume,
+    'rating': rating,
+    'calories_burned': caloriesBurned,
+  };
+    if (includeId) {
+    map['id'] = id as Object;
+    }
+    return map;
   }
 
   // Create a Workout object from a Map
@@ -145,14 +149,17 @@ class Maxes {
   });
 
   // Convert a Maxes object into a Map
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
+  Map<String, dynamic> toMap({bool includeId = false}) {
+    final map = {
       'movement_id': movementId,
       'metric': metric,
       'value': value,
       'date': date.toIso8601String(),
     };
+    if (includeId) {
+    map['id'] = id as Object;
+    }
+    return map;
   }
 
   // Create a Maxes object from a Map
@@ -194,9 +201,8 @@ class Exercise {
   }) : sets = sets ?? [];
 
   // Convert an Exercise object into a Map
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
+  Map<String, dynamic> toMap({bool includeId = false}) {
+    final map = {
       'category': category,
       'movement_id': movement.id,
       'workout_id': workoutId,
@@ -206,6 +212,10 @@ class Exercise {
       'date': date.toIso8601String(),
       'volume': volume,
     };
+    if (includeId) {
+    map['id'] = id as Object;
+    }
+    return map;
   }
 
   // Create an Exercise object from a Map
@@ -249,9 +259,8 @@ class WorkoutSet {
   });
 
   // Convert a Set object into a Map
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
+  Map<String, dynamic> toMap({bool includeId = false}) {
+    final map = {
       'notes': notes,
       'exercise_id': exerciseId,
       'reps': reps,
@@ -261,6 +270,10 @@ class WorkoutSet {
       'distance': distance,
       'rpe': rpe,
     };
+    if (includeId) {
+    map['id'] = id as Object;
+    }
+    return map;
   }
 
   // Create a Set object from a Map
@@ -293,13 +306,16 @@ class WorkoutTemplates {
   });
 
   // Convert a WorkoutTemplates object into a Map
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
+  Map<String, dynamic> toMap({bool includeId = false}) {
+    final map = {
       'title': title,
       'notes': notes,
       'exercises': jsonEncode(exercises), // Convert JSON to string
     };
+    if (includeId) {
+    map['id'] = id as String;
+    }
+    return map;
   }
 
   // Create a WorkoutTemplates object from a Map
@@ -331,15 +347,18 @@ class Goals {
   });
 
   // Convert a Goals object into a Map
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
+  Map<String, dynamic> toMap({bool includeId = false}) {
+    final map = {
       'movement_id': movementId,
       'target_value': targetValue,
       'target_date': targetDate.toIso8601String(),
       'notes': notes,
       'achieved': achieved ? 1 : 0, // Store as integer (1 for true, 0 for false)
     };
+    if (includeId) {
+    map['id'] = id as Object;
+    }
+    return map;
   }
 
   // Create a Goals object from a Map
@@ -369,13 +388,16 @@ class BodyMeasurements {
   });
 
   // Convert a BodyMeasurements object into a Map
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
+  Map<String, dynamic> toMap({bool includeId = false}) {
+    final map = {
       'name': name,
       'unit': unit,
       'notes': notes,
     };
+    if (includeId) {
+    map['id'] = id as String;
+    }
+    return map;
   }
 
   // Create a BodyMeasurements object from a Map
@@ -405,14 +427,17 @@ class BodyMetrics {
   });
 
   // Convert a BodyMetrics object into a Map
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
+  Map<String, dynamic> toMap({bool includeId = false}) {
+    final map = {
       'measurement_id': measurementId,
       'value': value,
       'date': date.toIso8601String(),
       'notes': notes,
     };
+    if (includeId) {
+    map['id'] = id as Object;
+    }
+    return map;
   }
 
   // Create a BodyMetrics object from a Map
