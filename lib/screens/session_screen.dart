@@ -162,119 +162,118 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
         ],
 
 
-bottom: PreferredSize(
-  preferredSize: const Size.fromHeight(74), // a bit taller to fit lines
-  child: Column(
-    mainAxisSize: MainAxisSize.min,
-    children: [
-      // Top thin line
-      Container(
-        height: 1,
-        color: Palette.inverseThemeColor.withOpacity(0.2), // subtle line color
-      ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(74), // a bit taller to fit lines
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Top thin line
+              Container(
+                height: 1,
+                color: Palette.inverseThemeColor.withOpacity(0.2), // subtle line color
+              ),
 
-      // Your existing bar container
-      Container(
-        color: Palette.primaryBackground,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Duration - flush left
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Duration",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Palette.inverseThemeColor.withOpacity(0.7),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  durationText,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Palette.inverseThemeColor,
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(width: 40),
-
-            Row(
-              children: [
-                SizedBox(
-                  width: 80,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Volume",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Palette.inverseThemeColor.withOpacity(0.7),
+              // Your existing bar container
+              Container(
+                color: Palette.primaryBackground,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Duration - flush left
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Duration",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Palette.inverseThemeColor.withOpacity(0.7),
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        "0 lbs",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Palette.inverseThemeColor,
+                        const SizedBox(height: 4),
+                        Text(
+                          durationText,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Palette.inverseThemeColor,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
+                      ],
+                    ),
 
-                const SizedBox(width: 24),
+                    const SizedBox(width: 40),
 
-                SizedBox(
-                  width: 60,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Sets",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Palette.inverseThemeColor.withOpacity(0.7),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 80,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Volume",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Palette.inverseThemeColor.withOpacity(0.7),
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                "0 lbs",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Palette.inverseThemeColor,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        "0",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Palette.inverseThemeColor,
+
+                        const SizedBox(width: 24),
+
+                        SizedBox(
+                          width: 60,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Sets",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Palette.inverseThemeColor.withOpacity(0.7),
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                "0",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Palette.inverseThemeColor,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ],
+              ),
+              // Bottom thin line
+              Container(
+                height: 1,
+                color: Palette.inverseThemeColor.withOpacity(0.2),
+              ),
+            ],
+          ),
         ),
-      ),
-
-      // Bottom thin line
-      Container(
-        height: 1,
-        color: Palette.inverseThemeColor.withOpacity(0.2),
-      ),
-    ],
-  ),
-),
 
 
       ),

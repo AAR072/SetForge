@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:path_provider_linux/path_provider_linux.dart';
+import 'package:setforge/database/dao/movement_dao.dart';
+import 'package:setforge/database/movement_population.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -12,6 +14,8 @@ class DatabaseHelper {
   DatabaseHelper._init();
 
   Future<Database> get database async {
+    final movements = await loadAllMovementsFromAssets();
+    print('Loaded ${movements.length} movements.');
     if (_database != null) return _database!;
     _database = await _initDB('setforge.db');
     return _database!;
