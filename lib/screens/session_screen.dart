@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:setforge/helpers/session_helpers.dart';
 import 'package:setforge/notifiers/workout_notifier.dart';
 import 'package:setforge/database/models.dart';  // For Workout
 import 'package:setforge/styling/colors.dart';
@@ -10,8 +12,9 @@ class SessionScreen extends ConsumerStatefulWidget {
   @override
   ConsumerState<SessionScreen> createState() => _SessionScreenState();
 }
-
 class _SessionScreenState extends ConsumerState<SessionScreen> {
+  Timer? _timer;
+
   @override
   void initState() {
     super.initState();
@@ -23,15 +26,53 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
       if (workout == null) {
         final initialWorkout = Workout(
           id: null,
-          title: "Default Workout",
+          title: createWorkoutTitle(DateTime.now()),
           date: DateTime.now(),
-          duration: 0,
           volume: 0,
           exercises: [],
         );
         workoutNotifier.startWorkout(initialWorkout);
       }
     });
+
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      setState(() {}); // rebuild every second for live duration update
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  String timeConverter(DateTime start) {
+    final now = DateTime.now();
+    final duration = now.difference(start);
+
+    if (duration.inHours >= 24) {
+      return "24h+";
+    }
+
+    final hours = duration.inHours;
+    final minutes = duration.inMinutes % 60;
+    final seconds = duration.inSeconds % 60;
+
+    // If hours and minutes both zero, only show seconds
+    if (hours == 0 && minutes == 0) {
+      return "${seconds}s";
+    }
+
+    final buffer = StringBuffer();
+    if (hours > 0) {
+      buffer.write("${hours}h ");
+    }
+    if (minutes > 0 || hours > 0) {
+      buffer.write("${minutes}min ");
+    }
+    buffer.write("${seconds}s");
+
+    return buffer.toString().trim();
   }
 
   @override
@@ -51,6 +92,7 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
       );
     }
 
+    final durationText = timeConverter(workout.date);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Palette.secondaryBackground,
@@ -152,7 +194,7 @@ bottom: PreferredSize(
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  "10h 10min 10s",
+                  durationText,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -251,12 +293,6 @@ bottom: PreferredSize(
           const SizedBox(height: 16),
 
           Text(
-            "Date: ${workout.date.toLocal()}",
-            style: const TextStyle(fontSize: 16),
-          ),
-          const SizedBox(height: 12),
-
-          Text(
             "Notes: ${workout.notes.isEmpty ? "None" : workout.notes}",
             style: const TextStyle(fontSize: 16),
           ),
@@ -306,366 +342,6 @@ bottom: PreferredSize(
           ),
 
           const SizedBox(height: 12),
-
-          const SizedBox(height: 20),
-
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
-          Text( "Workout is active",
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Palette.green,
-            ),
-          ),
         ],
       ),
     ),

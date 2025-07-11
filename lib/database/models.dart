@@ -7,7 +7,6 @@ class Workout {
   final int? id;
   final String title;
   final DateTime date;
-  final int duration;
   final String notes;
   final double volume;
   final int? rating;
@@ -15,7 +14,6 @@ class Workout {
   List<Exercise> exercises;
 
 
-  /// The [duration] is in seconds
   /// The [volume] is in lbs
   /// The [caloriesBurned] are 0 by default;
   Workout({
@@ -23,7 +21,6 @@ class Workout {
     this.rating,
     required this.title,
     required this.date,
-    required this.duration,
     required this.volume,
     this.notes = "",
     this.caloriesBurned = 0,
@@ -35,7 +32,6 @@ class Workout {
     final map = {
     'title': title,
     'date': date.toIso8601String(),
-    'duration': duration,
     'notes': notes,
     'volume': volume,
     'rating': rating,
@@ -53,7 +49,6 @@ class Workout {
       id: map['id'],
       title: map['title'],
       date: DateTime.parse(map['date']),
-      duration: map['duration'],
       notes: map['notes'],
       volume: map['volume'],
       rating: map['rating'],
@@ -64,7 +59,6 @@ class Workout {
     int? id,
     String? title,
     DateTime? date,
-    int? duration,
     String? notes,
     double? volume,
     int? rating,
@@ -75,7 +69,6 @@ class Workout {
       id: id ?? this.id,
       title: title ?? this.title,
       date: date ?? this.date,
-      duration: duration ?? this.duration,
       notes: notes ?? this.notes,
       volume: volume ?? this.volume,
       rating: rating ?? this.rating,
