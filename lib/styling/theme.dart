@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'colors.dart'; // Import the colors file
 
 final ThemeData macroFactorDarkTheme = ThemeData(
+    useMaterial3: true,
     dividerColor: Colors.transparent,
     brightness: Brightness.dark,
     scaffoldBackgroundColor: Palette.primaryBackground, // Main page background
@@ -45,7 +46,7 @@ final ThemeData macroFactorDarkTheme = ThemeData(
         borderSide: BorderSide(color: Palette.tertiaryBackground),
       ),
     ),
-    cardTheme: CardTheme(
+    cardTheme: CardThemeData(
       color: Palette.secondaryBackground, // Cards use secondary background
       elevation: 0,
     ),
@@ -107,10 +108,10 @@ final ThemeData macroFactorLightTheme = ThemeData(
         borderSide: BorderSide(color: Palette.tertiaryBackground),
       ),
     ),
-    cardTheme: CardTheme(
-      color: Palette.secondaryBackground, // Cards use secondary background
-      elevation: 0,
-    ),
+  cardTheme: CardThemeData(
+    color: Palette.secondaryBackground,
+    elevation: 0,
+  ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor:
             Palette.secondaryBackground, // Bottom navigation bar background

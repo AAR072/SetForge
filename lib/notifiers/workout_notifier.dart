@@ -1,66 +1,27 @@
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:setforge/database/models.dart'; // Your Workout model
 
-class WorkoutState {
-  final bool isActive;
-  final DateTime? startTime;
-  final String? currentExercise;
-  final int currentSet;
-  final Duration? duration;
+class WorkoutNotifier extends StateNotifier<Workout?> {
+  WorkoutNotifier() : super(null);  // null means no active workout
 
-  WorkoutState({
-    this.isActive = false,
-    this.startTime,
-    this.currentExercise,
-    this.currentSet = 0,
-    this.duration,
-  });
-
-  WorkoutState copyWith({
-    bool? isActive,
-    DateTime? startTime,
-    String? currentExercise,
-    int? currentSet,
-    Duration? duration,
-  }) {
-    return WorkoutState(
-      isActive: isActive ?? this.isActive,
-      startTime: startTime ?? this.startTime,
-      currentExercise: currentExercise ?? this.currentExercise,
-      currentSet: currentSet ?? this.currentSet,
-      duration: duration ?? this.duration,
-    );
-  }
-}
-
-class WorkoutNotifier extends StateNotifier<WorkoutState> {
-  WorkoutNotifier() : super(WorkoutState());
-
-  void startWorkout(String exercise) {
-    state = WorkoutState(
-      isActive: true,
-      startTime: DateTime.now(),
-      currentExercise: exercise,
-      currentSet: 1,
-      duration: Duration.zero,
-    );
+  void startWorkout(Workout workout) {
+    state = workout;
   }
 
   void endWorkout() {
-    state = WorkoutState(isActive: false);
+    state = null;
   }
 
-  void updateCurrentExercise(String newExercise) {
-    state = state.copyWith(currentExercise: newExercise);
+  void updateWorkout(Workout workout) {
+    state = workout;
   }
 
-  void incrementSet() {
-    state = state.copyWith(currentSet: state.currentSet + 1);
-  }
+  // You can add helper methods to update parts of the workout,
+  // but since Workout isn’t immutable, you’ll need to create a new Workout object each time.
 
-  void updateDuration(Duration newDuration) {
-    state = state.copyWith(duration: newDuration);
-  }
+  Workout? get currentWorkout => state;
 }
+final workoutProvider = StateNotifierProvider<WorkoutNotifier, Workout?>(
+  (ref) => WorkoutNotifier(),
+);
 
-final workoutProvider = StateNotifierProvider<WorkoutNotifier, WorkoutState>((ref) => WorkoutNotifier());

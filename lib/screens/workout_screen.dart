@@ -78,7 +78,7 @@ class _WorkoutScreenState extends State<WorkoutScreen>
                 Padding(padding: EdgeInsets.only(top: 10)),
                 GestureDetector(
                   onTap: () {
-                    context.push('/profile');
+                    context.push('/session');
                   },
                   child: Card(
                     shape: RoundedRectangleBorder(

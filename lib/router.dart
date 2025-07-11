@@ -1,3 +1,4 @@
+import 'package:setforge/screens/session_screen.dart';
 import 'package:setforge/screens/setup/faq_screen.dart';
 import 'package:setforge/screens/setup/profile_screen.dart';
 import 'package:setforge/screens/setup/theme_screen.dart';
@@ -6,7 +7,6 @@ import 'package:setforge/screens/setup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:setforge/screens/home_screen.dart';
-import 'package:setforge/screens/setup_screen.dart';
 import 'package:setforge/screens/workout_screen.dart';
 import 'package:setforge/widgets/nav_bar.dart';
 import 'package:setforge/screens/control_screen.dart';
@@ -96,6 +96,12 @@ final router = GoRouter(
     GoRoute(
       path: '/faq',
       builder: (context, state) => const FaqScreen(),
+      routes: [
+      ],
+    ),
+    GoRoute(
+      path: '/session',
+      builder: (context, state) => const SessionScreen(),
       routes: [
       ],
     )

@@ -60,6 +60,29 @@ class Workout {
       caloriesBurned: map['calories_burned'],
     );
   }
+  Workout copyWith({
+    int? id,
+    String? title,
+    DateTime? date,
+    int? duration,
+    String? notes,
+    double? volume,
+    int? rating,
+    int? caloriesBurned,
+    List<Exercise>? exercises,
+  }) {
+    return Workout(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      date: date ?? this.date,
+      duration: duration ?? this.duration,
+      notes: notes ?? this.notes,
+      volume: volume ?? this.volume,
+      rating: rating ?? this.rating,
+      caloriesBurned: caloriesBurned ?? this.caloriesBurned,
+      exercises: exercises ?? this.exercises,
+    );
+  }
 }
 
 class Movement {
