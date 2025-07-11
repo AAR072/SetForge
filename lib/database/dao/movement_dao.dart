@@ -26,14 +26,14 @@ class MovementDao{
 
   /// Retrieves all [Movement]s from the database.
   ///
-  /// Returns a list of [Movement] objects sorted by date in descending order.
+  /// Returns a list of [Movement] objects sorted by name in ascending order.
   ///
   /// Throws a [DatabaseException] if the query fails.
   Future<List<Movement>> getAllMovements() async {
     final db = await _dbHelper.database;
     final List<Map<String, dynamic>> maps = await db.query(
       'Movements',
-      orderBy: 'date DESC',
+      orderBy: 'name ASC',
     );
     return List.generate(maps.length, (i) => Movement.fromMap(maps[i]));
   }

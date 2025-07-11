@@ -1,3 +1,5 @@
+import 'package:setforge/database/dao/movement_dao.dart';
+import 'package:setforge/database/models.dart';
 import 'package:setforge/prefs.dart';
 import 'package:setforge/router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,12 +28,15 @@ Future main() async {
     statusBarBrightness: Brightness.dark,
   ));
   await DatabaseHelper.instance.database;
+  await DatabaseHelper.instance.deleteDatabaseFile();
+  await DatabaseHelper.instance.database;
+
   await SharedPrefsHelper.init();
     runApp(
     Phoenix(
       child: ProviderScope(child:
       MyApp(),
-)
+      )
     ),
   );
 }
