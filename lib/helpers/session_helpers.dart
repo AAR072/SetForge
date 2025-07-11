@@ -1,5 +1,7 @@
 // This computes the time elapsed since a date
 // and makes it human readable
+import 'package:setforge/database/models.dart';
+
 String timeConverter(DateTime start) {
   final now = DateTime.now();
   final duration = now.difference(start);
@@ -48,4 +50,20 @@ String createWorkoutTitle(DateTime dateTime) {
   }
 }
 
+double calculateTotalVolume(Workout workout) {
+  double totalVolume = 0;
+  for (var exercise in workout.exercises) {
+    for (var set in exercise.sets?? []) { // Use workoutSets property from Exercise
+      totalVolume += (set.reps * set.weight);
+    }
+  }
+  return totalVolume;
+}
 
+int calculateTotalSets(Workout workout) {
+  int totalSets = 0;
+  for (var exercise in workout.exercises) {
+    totalSets += (exercise.sets?.length ?? 0);
+  }
+  return totalSets;
+}

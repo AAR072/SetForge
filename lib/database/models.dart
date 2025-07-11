@@ -249,6 +249,31 @@ class Exercise {
       volume: map['volume'],
     );
   }
+  Exercise copyWith({
+    int? id,
+    String? category,
+    Movement? movement,
+    int? workoutId,
+    int? orderIndex,
+    int? restTime,
+    String? notes,
+    DateTime? date,
+    double? volume,
+    List<WorkoutSet>? sets,
+  }) {
+    return Exercise(
+      id: id ?? this.id,
+      category: category ?? this.category,
+      movement: movement ?? this.movement,
+      workoutId: workoutId ?? this.workoutId,
+      orderIndex: orderIndex ?? this.orderIndex,
+      restTime: restTime ?? this.restTime,
+      notes: notes ?? this.notes,
+      date: date ?? this.date,
+      volume: volume ?? this.volume,
+      sets: sets ?? this.sets,
+    );
+  }
 }
 
 class WorkoutSet {
@@ -261,6 +286,7 @@ class WorkoutSet {
   final int time;
   final double distance;
   final int rpe;
+  final String type;
 
   WorkoutSet({
     this.id,
@@ -272,6 +298,7 @@ class WorkoutSet {
     required this.time,
     required this.distance,
     required this.rpe,
+    required this.type
   });
 
   // Convert a Set object into a Map
@@ -285,6 +312,7 @@ class WorkoutSet {
       'time': time,
       'distance': distance,
       'rpe': rpe,
+      'type': type,
     };
     if (includeId) {
     map['id'] = id as Object;
@@ -304,6 +332,32 @@ class WorkoutSet {
       time: map['time'],
       distance: map['distance'],
       rpe: map['rpe'],
+      type: map['type']
+    );
+  }
+   WorkoutSet copyWith({
+    int? id,
+    String? notes,
+    int? exerciseId,
+    int? reps,
+    double? weight,
+    double? volume,
+    int? time,
+    double? distance,
+    int? rpe,
+    String? type,
+  }) {
+    return WorkoutSet(
+      id: id ?? this.id,
+      notes: notes ?? this.notes,
+      exerciseId: exerciseId ?? this.exerciseId,
+      reps: reps ?? this.reps,
+      weight: weight ?? this.weight,
+      volume: volume ?? this.volume,
+      time: time ?? this.time,
+      distance: distance ?? this.distance,
+      rpe: rpe ?? this.rpe,
+      type: type ?? this.type,
     );
   }
 }

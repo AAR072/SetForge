@@ -5,6 +5,7 @@ import 'package:setforge/helpers/session_helpers.dart';
 import 'package:setforge/notifiers/workout_notifier.dart';
 import 'package:setforge/database/models.dart';  // For Workout
 import 'package:setforge/styling/colors.dart';
+import 'package:setforge/widgets/workout/exercise_tile.dart';
 
 class SessionScreen extends ConsumerStatefulWidget {
   const SessionScreen({super.key});
@@ -145,7 +146,7 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
               style: TextStyle(
                 fontWeight: FontWeight.w900,
                 fontSize: 16,
-                color: Palette.inverseThemeColor,
+                color: Colors.white,
               ),
             ),
             style: TextButton.styleFrom(
@@ -223,7 +224,8 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                "0 lbs",
+                                calculateTotalVolume(
+                                  workout).toStringAsFixed(1),
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -251,7 +253,7 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                "0",
+                                calculateTotalSets(workout).toString(),
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -304,7 +306,116 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
           ),
           const SizedBox(height: 12),
 
+
+          Column(
+            children: workout.exercises.asMap().entries.map((exerciseEntry) {
+              final exerciseIndex = exerciseEntry.key;
+              final exercise = exerciseEntry.value;
+
+              return ExerciseTile(
+                exercise: exercise,
+                onOpenDetails: () {
+                  // your existing code
+                },
+                onOpenMenu: () {
+                  // your existing code
+                },
+                onNotesChanged: (val) {
+                  final workoutNotifier = ref.read(workoutProvider.notifier);
+                  final workout = ref.read(workoutProvider);
+
+                  if (workout == null) return;
+
+                  // Create updated exercise with new notes but keep sets
+                  final updatedExercise = exercise.copyWith(notes: val);
+
+                  // Replace the exercise in the workout's exercise list
+                  final updatedExercises = workout.exercises.map((ex) {
+                    return ex.id == exercise.id ? updatedExercise : ex;
+                  }).toList();
+
+                  // Update the workout with the new exercises list
+                  final updatedWorkout = workout.copyWith(exercises: updatedExercises);
+
+                  // Push the updated workout back to state
+                  workoutNotifier.updateWorkout(updatedWorkout);
+                },
+                onRestTimerPressed: () {
+                  // Optional: rest timer handler
+                },
+                workoutSets: exercise.sets,  // <-- You must have 'sets' in your Exercise model
+
+                onSetChanged: (setIndex, updatedSet) {
+                  final workoutNotifier = ref.read(workoutProvider.notifier);
+                  final workout = ref.read(workoutProvider);
+
+                  if (workout == null) return;
+
+                  final updatedSets = List<WorkoutSet>.from(exercise.sets);
+                  updatedSets[setIndex] = updatedSet;
+
+                  final updatedExercise = exercise.copyWith(sets: updatedSets);
+                  final updatedExercises = workout.exercises.map((ex) =>
+                    ex.id == exercise.id ? updatedExercise : ex
+                  ).toList();
+
+                  final updatedWorkout = workout.copyWith(exercises: updatedExercises);
+                  workoutNotifier.updateWorkout(updatedWorkout);
+                },
+                onAddSet: () {
+                  final workoutNotifier = ref.read(workoutProvider.notifier);
+                  final workout = ref.read(workoutProvider);
+
+                  if (workout == null) return;
+
+                  final newSet = WorkoutSet(
+                    notes: "",
+                    exerciseId: exercise.id ?? 0,
+                    reps: 0,
+                    weight: 0,
+                    volume: 0,
+                    time: 0,
+                    distance: 0,
+                    rpe: 0,
+                    type: "working",
+                  );
+
+                  final updatedSets = List<WorkoutSet>.from(exercise.sets)..add(newSet);
+
+                  final updatedExercise = exercise.copyWith(sets: updatedSets);
+                  final updatedExercises = workout.exercises.map((ex) =>
+                    ex.id == exercise.id ? updatedExercise : ex
+                  ).toList();
+
+                  final updatedWorkout = workout.copyWith(exercises: updatedExercises);
+                  workoutNotifier.updateWorkout(updatedWorkout);
+                },
+                onDeleteSet: (setIndex) {
+    final workoutNotifier = ref.read(workoutProvider.notifier);
+    final workout = ref.read(workoutProvider);
+
+    if (workout == null) return;
+
+    final updatedSets = List<WorkoutSet>.from(exercise.sets)..removeAt(setIndex);
+
+    final updatedExercise = exercise.copyWith(sets: updatedSets);
+    final updatedExercises = workout.exercises.map((ex) =>
+      ex.id == exercise.id ? updatedExercise : ex
+    ).toList();
+
+    final updatedWorkout = workout.copyWith(exercises: updatedExercises);
+    workoutNotifier.updateWorkout(updatedWorkout);
+  },
+              );
+            }).toList(),
+          ),
+
+          const SizedBox(height: 16),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Palette.blue, // <-- sets the button’s fill color
+              elevation: 0
+            ),
             onPressed: () {
               // Add a dummy exercise for example
               final updatedExercises = List.of(workout.exercises)
@@ -337,10 +448,67 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
               final updatedWorkout = workout.copyWith(exercises: updatedExercises);
               workoutNotifier.updateWorkout(updatedWorkout);
             },
-            child: const Text("Add Exercise"),
+            child: Row(
+              mainAxisSize: MainAxisSize.min, // this keeps the button tight around its content
+              children: [
+                Icon(Icons.add), // this is the plus icon
+                SizedBox(width: 8), // space between icon and text
+                Text("Add Exercise"),
+              ],
+            ),
           ),
 
-          const SizedBox(height: 12),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Palette.secondaryBackground, // <-- sets the button’s fill color
+            ),
+            onPressed: () async {
+              final confirm = await showDialog<bool>(
+              context: context,
+              barrierDismissible: false, // force the user to pick
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  backgroundColor: Palette.primaryBackground,
+                  title: const Text("Discard Workout?"),
+                  content: const Text(
+                    "Are you sure you want to discard this workout? This cannot be undone.",
+                  ),
+                  actions: [
+                    TextButton(
+                      child: const Text(
+                        "Cancel",
+                        style: TextStyle(color: Palette.blue),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                    ),
+                    TextButton(
+                      child: const Text(
+                        "Discard",
+                        style: TextStyle(color: Palette.red),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop(true);
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+              if (confirm == true) {
+                workoutNotifier.endWorkout();
+                Navigator.of(context).pop();
+              }
+            },
+            child: const Text(
+              "Discard Workout",
+              style: TextStyle(
+                color: Palette.red
+              ),
+            ),
+          ),
         ],
       ),
     ),
