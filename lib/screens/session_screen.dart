@@ -181,89 +181,79 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Duration - flush left
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Duration",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Palette.inverseThemeColor.withOpacity(0.7),
+                    // Duration block
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Duration",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Palette.inverseThemeColor.withOpacity(0.7),
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          durationText,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Palette.inverseThemeColor,
+                          const SizedBox(height: 4),
+                          Text(
+                            durationText,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Palette.inverseThemeColor,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
 
-                    const SizedBox(width: 40),
-
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 80,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Volume",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Palette.inverseThemeColor.withOpacity(0.7),
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                calculateTotalVolume(
-                                  workout).toStringAsFixed(1),
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Palette.inverseThemeColor,
-                                ),
-                              ),
-                            ],
+                    // Volume block
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Volume",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Palette.inverseThemeColor.withOpacity(0.7),
+                            ),
                           ),
-                        ),
-
-                        const SizedBox(width: 24),
-
-                        SizedBox(
-                          width: 60,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Sets",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Palette.inverseThemeColor.withOpacity(0.7),
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                calculateTotalSets(workout).toString(),
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Palette.inverseThemeColor,
-                                ),
-                              ),
-                            ],
+                          const SizedBox(height: 4),
+                          Text(
+                            calculateTotalVolume(workout).toStringAsFixed(1),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Palette.inverseThemeColor,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
+                    ),
+
+                    // Sets block
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Sets",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Palette.inverseThemeColor.withOpacity(0.7),
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            calculateTotalSets(workout).toString(),
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Palette.inverseThemeColor,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -311,8 +301,10 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
             children: workout.exercises.asMap().entries.map((exerciseEntry) {
               final exerciseIndex = exerciseEntry.key;
               final exercise = exerciseEntry.value;
-
               return ExerciseTile(
+                weightHint: "15", // or whatever default you want
+                repsHint: "12",
+
                 exercise: exercise,
                 onOpenDetails: () {
                   // your existing code
@@ -345,6 +337,11 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                 },
                 workoutSets: exercise.sets,
 
+                onToggleCompleted: (setIndex, toggleValue) {
+                  // we start a timer here
+
+                },
+
                 onSetChanged: (setIndex, updatedSet) {
                   final workoutNotifier = ref.read(workoutProvider.notifier);
                   final workout = ref.read(workoutProvider);
@@ -370,11 +367,11 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
 
                   final newSet = WorkoutSet(
                     notes: "",
+                    completed: false,
                     id: generateTempId(),
                     exerciseId: exercise.id ?? 0,
                     reps: 0,
                     weight: 0,
-                    volume: 0,
                     time: 0,
                     distance: 0,
                     rpe: 0,
@@ -392,21 +389,21 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                   workoutNotifier.updateWorkout(updatedWorkout);
                 },
                 onDeleteSet: (setIndex) {
-    final workoutNotifier = ref.read(workoutProvider.notifier);
-    final workout = ref.read(workoutProvider);
+                  final workoutNotifier = ref.read(workoutProvider.notifier);
+                  final workout = ref.read(workoutProvider);
 
-    if (workout == null) return;
+                  if (workout == null) return;
 
-    final updatedSets = List<WorkoutSet>.from(exercise.sets)..removeAt(setIndex);
+                  final updatedSets = List<WorkoutSet>.from(exercise.sets)..removeAt(setIndex);
 
-    final updatedExercise = exercise.copyWith(sets: updatedSets);
-    final updatedExercises = workout.exercises.map((ex) =>
-      ex.id == exercise.id ? updatedExercise : ex
-    ).toList();
+                  final updatedExercise = exercise.copyWith(sets: updatedSets);
+                  final updatedExercises = workout.exercises.map((ex) =>
+                    ex.id == exercise.id ? updatedExercise : ex
+                  ).toList();
 
-    final updatedWorkout = workout.copyWith(exercises: updatedExercises);
-    workoutNotifier.updateWorkout(updatedWorkout);
-  },
+                  final updatedWorkout = workout.copyWith(exercises: updatedExercises);
+                  workoutNotifier.updateWorkout(updatedWorkout);
+                },
               );
             }).toList(),
           ),

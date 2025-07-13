@@ -69,3 +69,15 @@ int calculateTotalSets(Workout workout) {
 }
 int generateTempId() => DateTime.now().microsecondsSinceEpoch;
 
+String formatWeight(double weight) {
+  if (weight == 0) return '';
+
+  // If it’s a whole number, drop the .0
+  if (weight % 1 == 0) {
+    return weight.toInt().toString();
+  }
+
+  // Else, keep decimals up to 2 if you want
+  return weight.toString();
+}
+

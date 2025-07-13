@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:setforge/database/models.dart';
+import 'package:setforge/helpers/session_helpers.dart';
 import 'package:setforge/styling/colors.dart';
 
 class ExerciseTile extends StatefulWidget {
@@ -11,7 +12,11 @@ class ExerciseTile extends StatefulWidget {
   final List<WorkoutSet> workoutSets;
   final void Function(int setIndex, WorkoutSet updatedSet) onSetChanged;
   final VoidCallback onAddSet;
+  final void Function(int setIndex, bool newValue)? onToggleCompleted;
   final void Function(int setIndex) onDeleteSet;
+
+  final String weightHint;
+  final String repsHint;
 
   const ExerciseTile({
     super.key,
@@ -20,10 +25,13 @@ class ExerciseTile extends StatefulWidget {
     required this.onOpenMenu,
     required this.onNotesChanged,
     required this.onRestTimerPressed,
+    required this.onToggleCompleted,
     required this.workoutSets,
     required this.onSetChanged,
     required this.onAddSet,
     required this.onDeleteSet,
+    this.weightHint = '10',
+    this.repsHint = '10',
   });
 
   @override
@@ -72,8 +80,7 @@ class _ExerciseTileState extends State<ExerciseTile> {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
+      color: Colors.transparent,
         child: Column(
           children: [
             // ROW 1 — Avatar + Title + 3-dot menu
@@ -141,164 +148,182 @@ class _ExerciseTileState extends State<ExerciseTile> {
                 }
 
                 final workingNumber =
-                    widget.workoutSets.take(i + 1).where((s) => s.type == "working").length;
+                widget.workoutSets.take(i + 1).where((s) => s.type == "working").length;
                 final weightController = _weightControllers.putIfAbsent(i, () {
-  return TextEditingController(text: set.weight.toString());
-});
-final weightFocus = _weightFocusNodes.putIfAbsent(i, () {
-  final focusNode = FocusNode();
-  focusNode.addListener(() {
-    if (!focusNode.hasFocus) {
+                  return TextEditingController(text: '');
+                });
+                final repsController = _repsControllers.putIfAbsent(i, () {
+                  return TextEditingController(text: '');
+                });
+
+                final weightFocus = _weightFocusNodes.putIfAbsent(i, () {
+                  final focusNode = FocusNode();
+                  focusNode.addListener(() {
+                    if (!focusNode.hasFocus) {
       final newWeight = double.tryParse(weightController.text) ?? 0.0;
-      // grab the latest set by index:
       final baseSet = widget.workoutSets[i];
       final updated = baseSet.copyWith(weight: newWeight);
       widget.onSetChanged(i, updated);
     }
-  });
-  return focusNode;
-});
+                  });
+                  return focusNode;
+                });
 
-final repsController = _repsControllers.putIfAbsent(i, () {
-  return TextEditingController(text: set.reps.toString());
-});
-
-final repsFocus = _repsFocusNodes.putIfAbsent(i, () {
-  final focusNode = FocusNode();
-  focusNode.addListener(() {
-    if (!focusNode.hasFocus) {
+                final repsFocus = _repsFocusNodes.putIfAbsent(i, () {
+                  final focusNode = FocusNode();
+                  focusNode.addListener(() {
+                    if (!focusNode.hasFocus) {
       final newReps = int.tryParse(repsController.text) ?? 0;
       final baseSet = widget.workoutSets[i];
       final updated = baseSet.copyWith(reps: newReps);
       widget.onSetChanged(i, updated);
     }
-  });
-  return focusNode;
-});
+                  });
+                  return focusNode;
+                });
+
+                // ONLY update controller text if NOT focused
+                if (!weightFocus.hasFocus) {
+  final weightText = formatWeight(set.weight);
+  if (weightController.text != weightText) {
+    weightController.text = weightText;
+  }
+}
+
+                if (!repsFocus.hasFocus) {
+  final repsText = set.reps > 0 ? set.reps.toString() : '';
+  if (repsController.text != repsText) {
+    repsController.text = repsText;
+  }
+}
 
 
-                return Dismissible(
-                  key: ValueKey(set.id ?? '$i-${set.hashCode}'),
-                  direction: DismissDirection.endToStart,
-                  background: Container(
-                    alignment: Alignment.centerRight,
-                    color: Palette.red,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: const Icon(Icons.delete, color: Colors.white),
-                  ),
-                  onDismissed: (_) => widget.onDeleteSet(i),
-child: Padding(
-  padding: const EdgeInsets.symmetric(vertical: 4),
-  child: Row(
-    children: [
-      // Set number - small fixed width
-      Container(
-        width: 30,
-        alignment: Alignment.center,
-        child: Text("$workingNumber"),
-      ),
+return Dismissible(
+  key: ValueKey(set.id ?? '$i-${set.hashCode}'),
+  direction: DismissDirection.endToStart,
+  background: Container(
+    alignment: Alignment.centerRight,
+    color: Palette.red,
+    padding: const EdgeInsets.symmetric(horizontal: 20),
+    child: const Icon(Icons.delete, color: Colors.white),
+  ),
+  onDismissed: (_) => widget.onDeleteSet(i),
+  child: Container(
+    color: workingNumber % 2 == 0 ? Colors.red : Colors.blue,
+    padding: const EdgeInsets.symmetric(vertical: 4),
+    child: Row(
+      children: [
+        // Set number
+        Container(
+          width: 30,
+          alignment: Alignment.center,
+          child: Text("$workingNumber"),
+        ),
+        const SizedBox(width: 8),
 
-      const SizedBox(width: 8),
-
-      // Previous text - flex 1
-      Expanded(
-        flex: 3,
-        child: TextButton(
-          onPressed: () {},
-          child: const Text("prev lbs x"),
-          style: TextButton.styleFrom(
-            padding: EdgeInsets.zero,
-            minimumSize: Size.zero,
-            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            alignment: Alignment.centerLeft,
-            textStyle: const TextStyle(fontSize: 14),
+        // Previous text
+        Expanded(
+          flex: 3,
+          child: TextButton(
+            onPressed: () {},
+            child: const Text("prev lbs x"),
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              alignment: Alignment.centerLeft,
+              textStyle: const TextStyle(fontSize: 14),
+            ),
           ),
         ),
-      ),
+        const SizedBox(width: 8),
 
-      const SizedBox(width: 8),
-
-// Weight input
-Expanded(
-  flex: 3,
-  child: TextField(
-    controller: weightController,
-    focusNode: weightFocus,
-    textAlign: TextAlign.center,
-    keyboardType: TextInputType.number,
-    decoration: InputDecoration(
-      hintText: "10",
-      border: InputBorder.none,
-      isDense: true,
-      contentPadding: EdgeInsets.symmetric(vertical: 8),
-      hintStyle: TextStyle(color: Colors.grey.shade400),
-    ),
-    style: TextStyle(color: Colors.grey.shade400),
-  ),
-),
-
-const SizedBox(width: 8),
-
-// Reps input
-Expanded(
-  flex: 3,
-  child: TextField(
-    controller: repsController,
-    focusNode: repsFocus,
-    textAlign: TextAlign.center,
-    keyboardType: TextInputType.number,
-    decoration: InputDecoration(
-      hintText: "10",
-      border: InputBorder.none,
-      isDense: true,
-      contentPadding: EdgeInsets.symmetric(vertical: 8),
-      hintStyle: TextStyle(color: Colors.grey.shade400),
-    ),
-    style: TextStyle(color: Colors.grey.shade400),
-  ),
-),
-
-      const SizedBox(width: 8),
-
-      // Check button - small fixed width
-      Container(
-        width: 30,
-        alignment: Alignment.center,
-        child: IconButton(
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(),
-          icon: const Icon(Icons.check_circle_outline),
-          onPressed: () {},
+        // Weight input
+        Expanded(
+          flex: 3,
+          child: TextField(
+            controller: weightController,
+            focusNode: weightFocus,
+            textAlign: TextAlign.center,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              filled: false,
+              hintText: widget.weightHint,
+              border: InputBorder.none,
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(vertical: 8),
+              hintStyle: TextStyle(color: Colors.grey.shade400),
+            ),
+            style: TextStyle(color: Palette.inverseThemeColor),
+          ),
         ),
-      ),
-    ],
+        const SizedBox(width: 8),
+
+        // Reps input
+        Expanded(
+          flex: 3,
+          child: TextField(
+            controller: repsController,
+            focusNode: repsFocus,
+            textAlign: TextAlign.center,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              filled: false,
+              hintText: widget.repsHint,
+              border: InputBorder.none,
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(vertical: 8),
+              hintStyle: TextStyle(color: Colors.grey.shade400),
+            ),
+            style: TextStyle(color: Palette.inverseThemeColor),
+          ),
+        ),
+        const SizedBox(width: 8),
+
+        // Check button
+        Container(
+          width: 30,
+          alignment: Alignment.center,
+          child: IconButton(
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
+            icon: Icon(
+              set.completed ? Icons.check_box : Icons.check_box_outline_blank,
+              color: set.completed ? Colors.green : Colors.grey,
+            ),
+            onPressed: () {
+              final updatedSet = set.copyWith(completed: !set.completed);
+              widget.onSetChanged(i, updatedSet);
+            },
+          ),
+        ),
+      ],
+    ),
   ),
-),
-                );
+);
               }).toList(),
             ),
 
-Align(
-  alignment: Alignment.centerLeft,
-  child: Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 8), // adjust padding as you want
-    child: SizedBox(
-      width: double.infinity,
-      child: ElevatedButton.icon(
-        onPressed: widget.onAddSet,
-        icon: const Icon(Icons.add),
-        label: const Text("Add Set"),
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 1),
-          backgroundColor: Palette.tertiaryBackground,
-        ),
-      ),
-    ),
-  ),
-),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8), // adjust padding as you want
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    onPressed: widget.onAddSet,
+                    icon: const Icon(Icons.add),
+                    label: const Text("Add Set"),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 1),
+                      backgroundColor: Palette.tertiaryBackground,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
-      ),
     );
   }
 }

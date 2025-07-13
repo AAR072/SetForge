@@ -276,17 +276,18 @@ class Exercise {
   }
 }
 
+
 class WorkoutSet {
   final int? id;
   final String notes;
   final int exerciseId;
   final int reps;
   final double weight;
-  final double volume;
   final int time;
   final double distance;
   final int rpe;
   final String type;
+  final bool completed;
 
   WorkoutSet({
     this.id,
@@ -294,33 +295,31 @@ class WorkoutSet {
     required this.exerciseId,
     required this.reps,
     required this.weight,
-    required this.volume,
     required this.time,
     required this.distance,
     required this.rpe,
-    required this.type
+    required this.type,
+    required this.completed,
   });
 
-  // Convert a Set object into a Map
   Map<String, dynamic> toMap({bool includeId = false}) {
     final map = {
       'notes': notes,
       'exercise_id': exerciseId,
       'reps': reps,
       'weight': weight,
-      'volume': volume,
       'time': time,
       'distance': distance,
       'rpe': rpe,
       'type': type,
+      'completed': completed ? 1 : 0,
     };
     if (includeId) {
-    map['id'] = id as Object;
+      map['id'] = id as Object;
     }
     return map;
   }
 
-  // Create a Set object from a Map
   factory WorkoutSet.fromMap(Map<String, dynamic> map) {
     return WorkoutSet(
       id: map['id'],
@@ -328,24 +327,25 @@ class WorkoutSet {
       exerciseId: map['exercise_id'],
       reps: map['reps'],
       weight: map['weight'],
-      volume: map['volume'],
       time: map['time'],
       distance: map['distance'],
       rpe: map['rpe'],
-      type: map['type']
+      type: map['type'],
+      completed: map['completed'] == 1,
     );
   }
-   WorkoutSet copyWith({
+
+  WorkoutSet copyWith({
     int? id,
     String? notes,
     int? exerciseId,
     int? reps,
     double? weight,
-    double? volume,
     int? time,
     double? distance,
     int? rpe,
     String? type,
+    bool? completed,
   }) {
     return WorkoutSet(
       id: id ?? this.id,
@@ -353,14 +353,15 @@ class WorkoutSet {
       exerciseId: exerciseId ?? this.exerciseId,
       reps: reps ?? this.reps,
       weight: weight ?? this.weight,
-      volume: volume ?? this.volume,
       time: time ?? this.time,
       distance: distance ?? this.distance,
       rpe: rpe ?? this.rpe,
       type: type ?? this.type,
+      completed: completed ?? this.completed,
     );
   }
 }
+
 
 class WorkoutTemplates {
   final int? id;
