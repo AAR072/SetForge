@@ -67,3 +67,5 @@ int calculateTotalSets(Workout workout) {
   }
   return totalSets;
 }
+int generateTempId() => DateTime.now().microsecondsSinceEpoch;
+

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:setforge/database/models.dart';
 import 'package:setforge/styling/colors.dart';
 
-class ExerciseTile extends StatelessWidget {
+class ExerciseTile extends StatefulWidget {
   final Exercise exercise;
   final VoidCallback onOpenDetails;
   final VoidCallback onOpenMenu;
@@ -27,6 +27,48 @@ class ExerciseTile extends StatelessWidget {
   });
 
   @override
+  State<ExerciseTile> createState() => _ExerciseTileState();
+}
+
+class _ExerciseTileState extends State<ExerciseTile> {
+
+  late final TextEditingController _notesController;
+  final Map<int, TextEditingController> _weightControllers = {};
+  final Map<int, FocusNode> _weightFocusNodes = {};
+
+  final Map<int, TextEditingController> _repsControllers = {};
+  final Map<int, FocusNode> _repsFocusNodes = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _notesController = TextEditingController(text: widget.exercise.notes);
+  }
+
+  @override
+  void dispose() {
+    _notesController.dispose();
+    _weightControllers.values.forEach((c) => c.dispose());
+    _weightFocusNodes.values.forEach((n) => n.dispose());
+    _repsControllers.values.forEach((c) => c.dispose());
+    _repsFocusNodes.values.forEach((n) => n.dispose());
+    super.dispose();
+  }
+
+
+
+  @override
+  void didUpdateWidget(covariant ExerciseTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.exercise.notes != widget.exercise.notes &&
+      _notesController.text != widget.exercise.notes) {
+    _notesController.text = widget.exercise.notes;
+  }
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -38,16 +80,16 @@ class ExerciseTile extends StatelessWidget {
             Row(
               children: [
                 GestureDetector(
-                  onTap: onOpenDetails,
+                  onTap: widget.onOpenDetails,
                   child: Row(
                     children: [
-                      CircleAvatar(
+                      const CircleAvatar(
                         radius: 20,
                         child: Icon(Icons.fitness_center),
                       ),
                       const SizedBox(width: 12),
                       Text(
-                        exercise.movement.name,
+                        widget.exercise.movement.name,
                         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -56,7 +98,7 @@ class ExerciseTile extends StatelessWidget {
                 const Spacer(),
                 IconButton(
                   icon: const Icon(Icons.more_vert),
-                  onPressed: onOpenMenu,
+                  onPressed: widget.onOpenMenu,
                 ),
               ],
             ),
@@ -65,14 +107,14 @@ class ExerciseTile extends StatelessWidget {
 
             // ROW 2 — Notes input
             TextField(
+              controller: _notesController,
               decoration: const InputDecoration(
                 hintText: "Add notes...",
                 border: OutlineInputBorder(),
                 contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               ),
-              onChanged: onNotesChanged,
+              onChanged: widget.onNotesChanged,
               maxLines: 1,
-              controller: TextEditingController(text: exercise.notes),
             ),
 
             const SizedBox(height: 12),
@@ -81,8 +123,8 @@ class ExerciseTile extends StatelessWidget {
             Align(
               alignment: Alignment.centerLeft,
               child: TextButton(
-                onPressed: onRestTimerPressed,
-                child: Text("Rest: ${exercise.restTime}s"),
+                onPressed: widget.onRestTimerPressed,
+                child: Text("Rest: ${widget.exercise.restTime}s"),
               ),
             ),
 
@@ -90,7 +132,7 @@ class ExerciseTile extends StatelessWidget {
 
             // ROW 4+ — Sets list with swipe-to-delete
             Column(
-              children: workoutSets.asMap().entries.map((entry) {
+              children: widget.workoutSets.asMap().entries.map((entry) {
                 final i = entry.key;
                 final set = entry.value;
 
@@ -99,7 +141,41 @@ class ExerciseTile extends StatelessWidget {
                 }
 
                 final workingNumber =
-                    workoutSets.take(i + 1).where((s) => s.type == "working").length;
+                    widget.workoutSets.take(i + 1).where((s) => s.type == "working").length;
+                final weightController = _weightControllers.putIfAbsent(i, () {
+  return TextEditingController(text: set.weight.toString());
+});
+final weightFocus = _weightFocusNodes.putIfAbsent(i, () {
+  final focusNode = FocusNode();
+  focusNode.addListener(() {
+    if (!focusNode.hasFocus) {
+      final newWeight = double.tryParse(weightController.text) ?? 0.0;
+      // grab the latest set by index:
+      final baseSet = widget.workoutSets[i];
+      final updated = baseSet.copyWith(weight: newWeight);
+      widget.onSetChanged(i, updated);
+    }
+  });
+  return focusNode;
+});
+
+final repsController = _repsControllers.putIfAbsent(i, () {
+  return TextEditingController(text: set.reps.toString());
+});
+
+final repsFocus = _repsFocusNodes.putIfAbsent(i, () {
+  final focusNode = FocusNode();
+  focusNode.addListener(() {
+    if (!focusNode.hasFocus) {
+      final newReps = int.tryParse(repsController.text) ?? 0;
+      final baseSet = widget.workoutSets[i];
+      final updated = baseSet.copyWith(reps: newReps);
+      widget.onSetChanged(i, updated);
+    }
+  });
+  return focusNode;
+});
+
 
                 return Dismissible(
                   key: ValueKey(set.id ?? '$i-${set.hashCode}'),
@@ -110,100 +186,116 @@ class ExerciseTile extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: const Icon(Icons.delete, color: Colors.white),
                   ),
-                  onDismissed: (_) => onDeleteSet(i),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      children: [
-                        // Set number
-                        InkWell(
-                          onTap: () {
-                            // Optional: open set type drawer
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            child: Text("$workingNumber"),
-                          ),
-                        ),
+                  onDismissed: (_) => widget.onDeleteSet(i),
+child: Padding(
+  padding: const EdgeInsets.symmetric(vertical: 4),
+  child: Row(
+    children: [
+      // Set number - small fixed width
+      Container(
+        width: 30,
+        alignment: Alignment.center,
+        child: Text("$workingNumber"),
+      ),
 
-                        const SizedBox(width: 8),
+      const SizedBox(width: 8),
 
-                        // Previous weight x reps (placeholder)
-                        TextButton(
-                          onPressed: () {
-                            // Optional: fill weight & reps from previous set
-                          },
-                          child: Text("prev lbs x "),
-                        ),
+      // Previous text - flex 1
+      Expanded(
+        flex: 3,
+        child: TextButton(
+          onPressed: () {},
+          child: const Text("prev lbs x"),
+          style: TextButton.styleFrom(
+            padding: EdgeInsets.zero,
+            minimumSize: Size.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            alignment: Alignment.centerLeft,
+            textStyle: const TextStyle(fontSize: 14),
+          ),
+        ),
+      ),
 
-                        const SizedBox(width: 8),
+      const SizedBox(width: 8),
 
-                        // Weight input
-                        SizedBox(
-                          width: 50,
-                          child: TextFormField(
-                            initialValue: set.weight.toString(),
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              labelText: "Weight",
-                              isDense: true,
-                            ),
-                            onChanged: (val) {
-                              final weight = double.tryParse(val) ?? 0;
-                              final updatedSet = set.copyWith(weight: weight);
-                              onSetChanged(i, updatedSet);
-                            },
-                          ),
-                        ),
+// Weight input
+Expanded(
+  flex: 3,
+  child: TextField(
+    controller: weightController,
+    focusNode: weightFocus,
+    textAlign: TextAlign.center,
+    keyboardType: TextInputType.number,
+    decoration: InputDecoration(
+      hintText: "10",
+      border: InputBorder.none,
+      isDense: true,
+      contentPadding: EdgeInsets.symmetric(vertical: 8),
+      hintStyle: TextStyle(color: Colors.grey.shade400),
+    ),
+    style: TextStyle(color: Colors.grey.shade400),
+  ),
+),
 
-                        const SizedBox(width: 8),
+const SizedBox(width: 8),
 
-                        // Reps input
-                        SizedBox(
-                          width: 50,
-                          child: TextFormField(
-                            initialValue: set.reps.toString(),
-                            keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
-                              labelText: "Reps",
-                              isDense: true,
-                            ),
-                            onChanged: (val) {
-                              final reps = int.tryParse(val) ?? 0;
-                              final updatedSet = set.copyWith(reps: reps);
-                              onSetChanged(i, updatedSet);
-                            },
-                          ),
-                        ),
+// Reps input
+Expanded(
+  flex: 3,
+  child: TextField(
+    controller: repsController,
+    focusNode: repsFocus,
+    textAlign: TextAlign.center,
+    keyboardType: TextInputType.number,
+    decoration: InputDecoration(
+      hintText: "10",
+      border: InputBorder.none,
+      isDense: true,
+      contentPadding: EdgeInsets.symmetric(vertical: 8),
+      hintStyle: TextStyle(color: Colors.grey.shade400),
+    ),
+    style: TextStyle(color: Colors.grey.shade400),
+  ),
+),
 
-                        const SizedBox(width: 8),
+      const SizedBox(width: 8),
 
-                        // Check button (mark complete)
-                        IconButton(
-                          icon: const Icon(Icons.check_circle_outline),
-                          onPressed: () {
-                            // Optional: mark set complete
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
+      // Check button - small fixed width
+      Container(
+        width: 30,
+        alignment: Alignment.center,
+        child: IconButton(
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints(),
+          icon: const Icon(Icons.check_circle_outline),
+          onPressed: () {},
+        ),
+      ),
+    ],
+  ),
+),
                 );
               }).toList(),
             ),
 
-            Align(
-              alignment: Alignment.centerLeft,
-              child: ElevatedButton.icon(
-                onPressed: onAddSet,
-                icon: const Icon(Icons.add),
-                label: const Text("Add Set"),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  backgroundColor: Palette.tertiaryBackground
-                ),
-              ),
-            ),
+Align(
+  alignment: Alignment.centerLeft,
+  child: Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 8), // adjust padding as you want
+    child: SizedBox(
+      width: double.infinity,
+      child: ElevatedButton.icon(
+        onPressed: widget.onAddSet,
+        icon: const Icon(Icons.add),
+        label: const Text("Add Set"),
+        style: ElevatedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 1),
+          backgroundColor: Palette.tertiaryBackground,
+        ),
+      ),
+    ),
+  ),
+),
           ],
         ),
       ),

@@ -69,7 +69,7 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
       buffer.write("${hours}h ");
     }
     if (minutes > 0 || hours > 0) {
-      buffer.write("${minutes}min ");
+      buffer.write("${minutes}m ");
     }
     buffer.write("${seconds}s");
 
@@ -343,7 +343,7 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                 onRestTimerPressed: () {
                   // Optional: rest timer handler
                 },
-                workoutSets: exercise.sets,  // <-- You must have 'sets' in your Exercise model
+                workoutSets: exercise.sets,
 
                 onSetChanged: (setIndex, updatedSet) {
                   final workoutNotifier = ref.read(workoutProvider.notifier);
@@ -370,6 +370,7 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
 
                   final newSet = WorkoutSet(
                     notes: "",
+                    id: generateTempId(),
                     exerciseId: exercise.id ?? 0,
                     reps: 0,
                     weight: 0,
@@ -421,10 +422,10 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
               final updatedExercises = List.of(workout.exercises)
               ..add(
                 Exercise(
-                  id: null,
+                  id: generateTempId(),
                   category: "Working",
                   movement: Movement(
-                    id: null,
+                    id: generateTempId(),
                     name: "New Movement",
                     type: "Strength",
                     oneRepMax: 100,
