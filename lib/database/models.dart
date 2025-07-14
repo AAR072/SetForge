@@ -13,7 +13,6 @@ class Workout {
   final int caloriesBurned;
   List<Exercise> exercises;
 
-
   /// The [volume] is in lbs
   /// The [caloriesBurned] are 0 by default;
   Workout({
@@ -28,17 +27,17 @@ class Workout {
   }) : exercises = exercises ?? [];
 
   // Convert a Workout object into a Map
-  Map<String, dynamic> toMap({bool includeId = false})  {
+  Map<String, dynamic> toMap({bool includeId = false}) {
     final map = {
-    'title': title,
-    'date': date.toIso8601String(),
-    'notes': notes,
-    'volume': volume,
-    'rating': rating,
-    'calories_burned': caloriesBurned,
-  };
+      'title': title,
+      'date': date.toIso8601String(),
+      'notes': notes,
+      'volume': volume,
+      'rating': rating,
+      'calories_burned': caloriesBurned,
+    };
     if (includeId) {
-    map['id'] = id as Object;
+      map['id'] = id as Object;
     }
     return map;
   }
@@ -110,22 +109,22 @@ class Movement {
   // Convert a Movement object into a Map
   Map<String, dynamic> toMap({bool includeId = false}) {
     final map = {
-    'name': name,
-    'type': type,
-    'one_rep_max': oneRepMax,
-    'muscleGroups': jsonEncode(muscleGroups),
-    'instructions': instructions,
-    'imageUrl': imageUrl,
-    'maxWeight': maxWeight,
-    'maxSessionVolume': maxSessionVolume,
-    'maxSetVolume': maxSetVolume,
-    'equipment': equipment,
-    'completion_count': completionCount,
-  };
+      'name': name,
+      'type': type,
+      'one_rep_max': oneRepMax,
+      'muscleGroups': jsonEncode(muscleGroups),
+      'instructions': instructions,
+      'imageUrl': imageUrl,
+      'maxWeight': maxWeight,
+      'maxSessionVolume': maxSessionVolume,
+      'maxSetVolume': maxSetVolume,
+      'equipment': equipment,
+      'completion_count': completionCount,
+    };
 
     if (includeId) {
-    map['id'] = id as Object;
-  }
+      map['id'] = id as Object;
+    }
 
     return map;
   }
@@ -173,7 +172,7 @@ class Maxes {
       'date': date.toIso8601String(),
     };
     if (includeId) {
-    map['id'] = id as Object;
+      map['id'] = id as Object;
     }
     return map;
   }
@@ -192,6 +191,7 @@ class Maxes {
 
 class Exercise {
   final int? id;
+
   /// Warmup, Working, Failure, Injury
   final String category;
   final Movement movement;
@@ -229,7 +229,7 @@ class Exercise {
       'volume': volume,
     };
     if (includeId) {
-    map['id'] = id as Object;
+      map['id'] = id as Object;
     }
     return map;
   }
@@ -249,6 +249,7 @@ class Exercise {
       volume: map['volume'],
     );
   }
+
   Exercise copyWith({
     int? id,
     String? category,
@@ -275,7 +276,6 @@ class Exercise {
     );
   }
 }
-
 
 class WorkoutSet {
   final int? id;
@@ -362,12 +362,12 @@ class WorkoutSet {
   }
 }
 
-
 class WorkoutTemplates {
   final int? id;
   final String title;
   final String notes;
-  final List<dynamic> exercises; // Array of exercise IDs with order, sets, reps, etc.
+  final List<dynamic>
+      exercises; // Array of exercise IDs with order, sets, reps, etc.
 
   WorkoutTemplates({
     this.id,
@@ -384,7 +384,7 @@ class WorkoutTemplates {
       'exercises': jsonEncode(exercises), // Convert JSON to string
     };
     if (includeId) {
-    map['id'] = id as String;
+      map['id'] = id as String;
     }
     return map;
   }
@@ -424,10 +424,11 @@ class Goals {
       'target_value': targetValue,
       'target_date': targetDate.toIso8601String(),
       'notes': notes,
-      'achieved': achieved ? 1 : 0, // Store as integer (1 for true, 0 for false)
+      'achieved':
+          achieved ? 1 : 0, // Store as integer (1 for true, 0 for false)
     };
     if (includeId) {
-    map['id'] = id as Object;
+      map['id'] = id as Object;
     }
     return map;
   }
@@ -466,7 +467,7 @@ class BodyMeasurements {
       'notes': notes,
     };
     if (includeId) {
-    map['id'] = id as String;
+      map['id'] = id as String;
     }
     return map;
   }
@@ -506,7 +507,7 @@ class BodyMetrics {
       'notes': notes,
     };
     if (includeId) {
-    map['id'] = id as Object;
+      map['id'] = id as Object;
     }
     return map;
   }

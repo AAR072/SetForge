@@ -9,7 +9,8 @@ class SharedPrefsHelper {
   static Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
     if (_prefs?.get("darkMode") == null) {
-      var brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
+      var brightness =
+          SchedulerBinding.instance.platformDispatcher.platformBrightness;
       bool isDarkMode = brightness == Brightness.dark;
       await _prefs?.setBool("darkMode", isDarkMode);
     } else {
@@ -82,7 +83,6 @@ class SharedPrefsHelper {
   static Future<void> remove(String key) async {
     await _prefs?.remove(key);
   }
-
 
   /// Clear all preferences
   static Future<void> clearAll() async {

@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:setforge/styling/theme.dart';
+
 Future main() async {
   // Init the DB
   sqfliteFfiInit();
@@ -30,12 +31,11 @@ Future main() async {
   await DatabaseHelper.instance.database;
 
   await SharedPrefsHelper.init();
-    runApp(
+  runApp(
     Phoenix(
-      child: ProviderScope(child:
-      MyApp(),
-      )
-    ),
+        child: ProviderScope(
+      child: MyApp(),
+    )),
   );
 }
 
@@ -46,9 +46,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'SetForge',
-      theme: SharedPrefsHelper.isDarkMode? macroFactorDarkTheme : macroFactorLightTheme,
+      theme: SharedPrefsHelper.isDarkMode
+          ? macroFactorDarkTheme
+          : macroFactorLightTheme,
       routerConfig: router,
     );
   }
 }
-

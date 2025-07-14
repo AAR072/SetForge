@@ -39,7 +39,8 @@ final router = GoRouter(
               key: state.pageKey,
               transitionDuration: Duration.zero,
               child: const HomeScreen(),
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
                 return child;
               },
             );
@@ -53,7 +54,8 @@ final router = GoRouter(
               key: state.pageKey,
               transitionDuration: Duration.zero,
               child: const WorkoutScreen(),
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
                 return child;
               },
             );
@@ -67,7 +69,8 @@ final router = GoRouter(
               key: state.pageKey,
               transitionDuration: Duration.zero,
               child: const SetupScreen(),
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
                 return child;
               },
             );
@@ -78,32 +81,27 @@ final router = GoRouter(
     GoRoute(
       path: '/units',
       builder: (context, state) => const UnitsScreen(),
-      routes: [
-      ],
+      routes: [],
     ),
     GoRoute(
       path: '/theme',
       builder: (context, state) => const ThemeScreen(),
-      routes: [
-      ],
+      routes: [],
     ),
     GoRoute(
       path: '/profile',
       builder: (context, state) => const ProfileScreen(),
-      routes: [
-      ],
+      routes: [],
     ),
     GoRoute(
       path: '/faq',
       builder: (context, state) => const FaqScreen(),
-      routes: [
-      ],
+      routes: [],
     ),
     GoRoute(
       path: '/session',
       builder: (context, state) => const SessionScreen(),
-      routes: [
-      ],
+      routes: [],
     )
   ],
 );

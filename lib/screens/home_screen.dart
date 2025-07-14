@@ -7,17 +7,15 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: NotificationListener<OverscrollIndicatorNotification>(
-      onNotification: (overscroll) {
-        overscroll.disallowIndicator(); // Prevent Overscroll Indication
-        return true;
-      },
-      child: ListView(
-        shrinkWrap: true,
-        children: [
-          Text("Home")
-        ],
+        onNotification: (overscroll) {
+          overscroll.disallowIndicator(); // Prevent Overscroll Indication
+          return true;
+        },
+        child: ListView(
+          shrinkWrap: true,
+          children: [Text("Home")],
+        ),
       ),
-    ),
     );
   }
 }

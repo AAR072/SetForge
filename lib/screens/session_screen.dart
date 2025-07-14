@@ -1,9 +1,10 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:setforge/helpers/session_helpers.dart';
 import 'package:setforge/notifiers/workout_notifier.dart';
-import 'package:setforge/database/models.dart';  // For Workout
+import 'package:setforge/database/models.dart'; // For Workout
 import 'package:setforge/styling/colors.dart';
 import 'package:setforge/widgets/workout/exercise_tile.dart';
 
@@ -13,6 +14,7 @@ class SessionScreen extends ConsumerStatefulWidget {
   @override
   ConsumerState<SessionScreen> createState() => _SessionScreenState();
 }
+
 class _SessionScreenState extends ConsumerState<SessionScreen> {
   Timer? _timer;
 
@@ -161,8 +163,6 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
           ),
           const SizedBox(width: 8),
         ],
-
-
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(74), // a bit taller to fit lines
           child: Column(
@@ -171,13 +171,15 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
               // Top thin line
               Container(
                 height: 1,
-                color: Palette.inverseThemeColor.withOpacity(0.2), // subtle line color
+                color: Palette.inverseThemeColor
+                    .withOpacity(0.2), // subtle line color
               ),
 
               // Your existing bar container
               Container(
                 color: Palette.primaryBackground,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -266,250 +268,315 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
             ],
           ),
         ),
-
-
       ),
       body: NotificationListener<OverscrollIndicatorNotification>(
-      onNotification: (overscroll) {
-        overscroll.disallowIndicator();
-        return true;
-      },
-      child: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Text(
-            "Workout: ${workout.title}",
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 16),
+        onNotification: (overscroll) {
+          overscroll.disallowIndicator();
+          return true;
+        },
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            Text(
+              "Workout: ${workout.title}",
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "Notes: ${workout.notes.isEmpty ? "None" : workout.notes}",
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              "Exercises: ${workout.exercises.length}",
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            Column(
+              children: workout.exercises.asMap().entries.map((exerciseEntry) {
+                final exerciseIndex = exerciseEntry.key;
+                final exercise = exerciseEntry.value;
+                return ExerciseTile(
+                  weightHint: "15", // or whatever default you want
+                  repsHint: "12",
 
-          Text(
-            "Notes: ${workout.notes.isEmpty ? "None" : workout.notes}",
-            style: const TextStyle(fontSize: 16),
-          ),
+                  exercise: exercise,
+                  onOpenDetails: () {
+                    // your existing code
+                  },
+                  onOpenMenu: () {
+                    // your existing code
+                  },
+                  onNotesChanged: (val) {
+                    final workoutNotifier = ref.read(workoutProvider.notifier);
+                    final workout = ref.read(workoutProvider);
 
-          const SizedBox(height: 20),
+                    if (workout == null) return;
 
-          Text(
-            "Exercises: ${workout.exercises.length}",
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 12),
+                    // Create updated exercise with new notes but keep sets
+                    final updatedExercise = exercise.copyWith(notes: val);
 
+                    // Replace the exercise in the workout's exercise list
+                    final updatedExercises = workout.exercises.map((ex) {
+                      return ex.id == exercise.id ? updatedExercise : ex;
+                    }).toList();
 
-          Column(
-            children: workout.exercises.asMap().entries.map((exerciseEntry) {
-              final exerciseIndex = exerciseEntry.key;
-              final exercise = exerciseEntry.value;
-              return ExerciseTile(
-                weightHint: "15", // or whatever default you want
-                repsHint: "12",
+                    // Update the workout with the new exercises list
+                    final updatedWorkout =
+                        workout.copyWith(exercises: updatedExercises);
 
-                exercise: exercise,
-                onOpenDetails: () {
-                  // your existing code
-                },
-                onOpenMenu: () {
-                  // your existing code
-                },
-                onNotesChanged: (val) {
-                  final workoutNotifier = ref.read(workoutProvider.notifier);
-                  final workout = ref.read(workoutProvider);
+                    // Push the updated workout back to state
+                    workoutNotifier.updateWorkout(updatedWorkout);
+                  },
+                  onRestTimerPressed: () async {
+                    final selected = await showModalBottomSheet<int>(
+                      context: context,
+                      builder: (context) {
+                        int tempRestTime = exercise.restTime;
+                        return SafeArea(
+                          child: Container(
+                            height: 200,
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 12),
+                                const Text(
+                                  "Select Rest Time (seconds)",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18),
+                                ),
+                                Expanded(
+                                  child: CupertinoPicker(
+                                    scrollController:
+                                        FixedExtentScrollController(
+                                      initialItem: exercise.restTime ~/ 5,
+                                    ),
+                                    itemExtent: 50,
+                                    onSelectedItemChanged: (index) {
+                                      tempRestTime = index * 5;
+                                    },
+                                    children: List.generate(241, (index) {
+                                      final totalSeconds = index * 5;
+                                      final formatted = secondsParser(totalSeconds);
 
-                  if (workout == null) return;
+                                      return Center(child: Text(formatted));
+                                    }),
+                                  ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop(tempRestTime);
+                                  },
+                                  child: const Text("Done"),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
 
-                  // Create updated exercise with new notes but keep sets
-                  final updatedExercise = exercise.copyWith(notes: val);
+                    if (selected != null) {
+                      final workoutNotifier =
+                          ref.read(workoutProvider.notifier);
+                      final workout = ref.read(workoutProvider);
+                      if (workout == null) return;
 
-                  // Replace the exercise in the workout's exercise list
-                  final updatedExercises = workout.exercises.map((ex) {
-                    return ex.id == exercise.id ? updatedExercise : ex;
-                  }).toList();
+                      final updatedExercise =
+                          exercise.copyWith(restTime: selected);
+                      final updatedExercises = workout.exercises.map((ex) {
+                        return ex.id == exercise.id ? updatedExercise : ex;
+                      }).toList();
 
-                  // Update the workout with the new exercises list
-                  final updatedWorkout = workout.copyWith(exercises: updatedExercises);
+                      final updatedWorkout =
+                          workout.copyWith(exercises: updatedExercises);
+                      workoutNotifier.updateWorkout(updatedWorkout);
+                    }
+                  },
+                  workoutSets: exercise.sets,
 
-                  // Push the updated workout back to state
-                  workoutNotifier.updateWorkout(updatedWorkout);
-                },
-                onRestTimerPressed: () {
-                  // Optional: rest timer handler
-                },
-                workoutSets: exercise.sets,
+                  onToggleCompleted: (setIndex, toggleValue) {
+                    // we start a timer here
+                  },
 
-                onToggleCompleted: (setIndex, toggleValue) {
-                  // we start a timer here
+                  onSetChanged: (setIndex, updatedSet) {
+                    final workoutNotifier = ref.read(workoutProvider.notifier);
+                    final workout = ref.read(workoutProvider);
 
-                },
+                    if (workout == null) return;
 
-                onSetChanged: (setIndex, updatedSet) {
-                  final workoutNotifier = ref.read(workoutProvider.notifier);
-                  final workout = ref.read(workoutProvider);
+                    final updatedSets = List<WorkoutSet>.from(exercise.sets);
+                    updatedSets[setIndex] = updatedSet;
 
-                  if (workout == null) return;
+                    final updatedExercise =
+                        exercise.copyWith(sets: updatedSets);
+                    final updatedExercises = workout.exercises
+                        .map(
+                            (ex) => ex.id == exercise.id ? updatedExercise : ex)
+                        .toList();
 
-                  final updatedSets = List<WorkoutSet>.from(exercise.sets);
-                  updatedSets[setIndex] = updatedSet;
+                    final updatedWorkout =
+                        workout.copyWith(exercises: updatedExercises);
+                    workoutNotifier.updateWorkout(updatedWorkout);
+                  },
+                  onAddSet: () {
+                    final workoutNotifier = ref.read(workoutProvider.notifier);
+                    final workout = ref.read(workoutProvider);
 
-                  final updatedExercise = exercise.copyWith(sets: updatedSets);
-                  final updatedExercises = workout.exercises.map((ex) =>
-                    ex.id == exercise.id ? updatedExercise : ex
-                  ).toList();
+                    if (workout == null) return;
 
-                  final updatedWorkout = workout.copyWith(exercises: updatedExercises);
-                  workoutNotifier.updateWorkout(updatedWorkout);
-                },
-                onAddSet: () {
-                  final workoutNotifier = ref.read(workoutProvider.notifier);
-                  final workout = ref.read(workoutProvider);
+                    final newSet = WorkoutSet(
+                      notes: "",
+                      completed: false,
+                      id: generateTempId(),
+                      exerciseId: exercise.id ?? 0,
+                      reps: 0,
+                      weight: 0,
+                      time: 0,
+                      distance: 0,
+                      rpe: 0,
+                      type: "working",
+                    );
 
-                  if (workout == null) return;
+                    final updatedSets = List<WorkoutSet>.from(exercise.sets)
+                      ..add(newSet);
 
-                  final newSet = WorkoutSet(
-                    notes: "",
-                    completed: false,
-                    id: generateTempId(),
-                    exerciseId: exercise.id ?? 0,
-                    reps: 0,
-                    weight: 0,
-                    time: 0,
-                    distance: 0,
-                    rpe: 0,
-                    type: "working",
+                    final updatedExercise =
+                        exercise.copyWith(sets: updatedSets);
+                    final updatedExercises = workout.exercises
+                        .map(
+                            (ex) => ex.id == exercise.id ? updatedExercise : ex)
+                        .toList();
+
+                    final updatedWorkout =
+                        workout.copyWith(exercises: updatedExercises);
+                    workoutNotifier.updateWorkout(updatedWorkout);
+                  },
+                  onDeleteSet: (setIndex) {
+                    final workoutNotifier = ref.read(workoutProvider.notifier);
+                    final workout = ref.read(workoutProvider);
+
+                    if (workout == null) return;
+
+                    final updatedSets = List<WorkoutSet>.from(exercise.sets)
+                      ..removeAt(setIndex);
+
+                    final updatedExercise =
+                        exercise.copyWith(sets: updatedSets);
+                    final updatedExercises = workout.exercises
+                        .map(
+                            (ex) => ex.id == exercise.id ? updatedExercise : ex)
+                        .toList();
+
+                    final updatedWorkout =
+                        workout.copyWith(exercises: updatedExercises);
+                    workoutNotifier.updateWorkout(updatedWorkout);
+                  },
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      Palette.blue, // <-- sets the button’s fill color
+                  elevation: 0),
+              onPressed: () {
+                // Add a dummy exercise for example
+                final updatedExercises = List.of(workout.exercises)
+                  ..add(
+                    Exercise(
+                      id: generateTempId(),
+                      category: "Working",
+                      movement: Movement(
+                        id: generateTempId(),
+                        name: "New Movement",
+                        type: "Strength",
+                        oneRepMax: 100,
+                        muscleGroups: {},
+                        instructions: "",
+                        maxWeight: 0,
+                        maxSessionVolume: 0,
+                        maxSetVolume: 0,
+                        equipment: "",
+                        completionCount: 0,
+                      ),
+                      workoutId: workout.id ?? 0,
+                      orderIndex: workout.exercises.length,
+                      restTime: 60,
+                      notes: "",
+                      date: DateTime.now(),
+                      volume: 0,
+                    ),
                   );
 
-                  final updatedSets = List<WorkoutSet>.from(exercise.sets)..add(newSet);
-
-                  final updatedExercise = exercise.copyWith(sets: updatedSets);
-                  final updatedExercises = workout.exercises.map((ex) =>
-                    ex.id == exercise.id ? updatedExercise : ex
-                  ).toList();
-
-                  final updatedWorkout = workout.copyWith(exercises: updatedExercises);
-                  workoutNotifier.updateWorkout(updatedWorkout);
-                },
-                onDeleteSet: (setIndex) {
-                  final workoutNotifier = ref.read(workoutProvider.notifier);
-                  final workout = ref.read(workoutProvider);
-
-                  if (workout == null) return;
-
-                  final updatedSets = List<WorkoutSet>.from(exercise.sets)..removeAt(setIndex);
-
-                  final updatedExercise = exercise.copyWith(sets: updatedSets);
-                  final updatedExercises = workout.exercises.map((ex) =>
-                    ex.id == exercise.id ? updatedExercise : ex
-                  ).toList();
-
-                  final updatedWorkout = workout.copyWith(exercises: updatedExercises);
-                  workoutNotifier.updateWorkout(updatedWorkout);
-                },
-              );
-            }).toList(),
-          ),
-
-          const SizedBox(height: 16),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Palette.blue, // <-- sets the button’s fill color
-              elevation: 0
-            ),
-            onPressed: () {
-              // Add a dummy exercise for example
-              final updatedExercises = List.of(workout.exercises)
-              ..add(
-                Exercise(
-                  id: generateTempId(),
-                  category: "Working",
-                  movement: Movement(
-                    id: generateTempId(),
-                    name: "New Movement",
-                    type: "Strength",
-                    oneRepMax: 100,
-                    muscleGroups: {},
-                    instructions: "",
-                    maxWeight: 0,
-                    maxSessionVolume: 0,
-                    maxSetVolume: 0,
-                    equipment: "",
-                    completionCount: 0,
-                  ),
-                  workoutId: workout.id ?? 0,
-                  orderIndex: workout.exercises.length,
-                  restTime: 60,
-                  notes: "",
-                  date: DateTime.now(),
-                  volume: 0,
-                ),
-              );
-
-              final updatedWorkout = workout.copyWith(exercises: updatedExercises);
-              workoutNotifier.updateWorkout(updatedWorkout);
-            },
-            child: Row(
-              mainAxisSize: MainAxisSize.min, // this keeps the button tight around its content
-              children: [
-                Icon(Icons.add), // this is the plus icon
-                SizedBox(width: 8), // space between icon and text
-                Text("Add Exercise"),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 16),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Palette.secondaryBackground, // <-- sets the button’s fill color
-            ),
-            onPressed: () async {
-              final confirm = await showDialog<bool>(
-              context: context,
-              barrierDismissible: false, // force the user to pick
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  backgroundColor: Palette.primaryBackground,
-                  title: const Text("Discard Workout?"),
-                  content: const Text(
-                    "Are you sure you want to discard this workout? This cannot be undone.",
-                  ),
-                  actions: [
-                    TextButton(
-                      child: const Text(
-                        "Cancel",
-                        style: TextStyle(color: Palette.blue),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop(false);
-                      },
-                    ),
-                    TextButton(
-                      child: const Text(
-                        "Discard",
-                        style: TextStyle(color: Palette.red),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop(true);
-                      },
-                    ),
-                  ],
-                );
+                final updatedWorkout =
+                    workout.copyWith(exercises: updatedExercises);
+                workoutNotifier.updateWorkout(updatedWorkout);
               },
-            );
-              if (confirm == true) {
-                workoutNotifier.endWorkout();
-                Navigator.of(context).pop();
-              }
-            },
-            child: const Text(
-              "Discard Workout",
-              style: TextStyle(
-                color: Palette.red
+              child: Row(
+                mainAxisSize: MainAxisSize
+                    .min, // this keeps the button tight around its content
+                children: [
+                  Icon(Icons.add), // this is the plus icon
+                  SizedBox(width: 8), // space between icon and text
+                  Text("Add Exercise"),
+                ],
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Palette
+                    .secondaryBackground, // <-- sets the button’s fill color
+              ),
+              onPressed: () async {
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  barrierDismissible: false, // force the user to pick
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      backgroundColor: Palette.primaryBackground,
+                      title: const Text("Discard Workout?"),
+                      content: const Text(
+                        "Are you sure you want to discard this workout? This cannot be undone.",
+                      ),
+                      actions: [
+                        TextButton(
+                          child: const Text(
+                            "Cancel",
+                            style: TextStyle(color: Palette.blue),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                          },
+                        ),
+                        TextButton(
+                          child: const Text(
+                            "Discard",
+                            style: TextStyle(color: Palette.red),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+                if (confirm == true) {
+                  workoutNotifier.endWorkout();
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const Text(
+                "Discard Workout",
+                style: TextStyle(color: Palette.red),
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
     );
   }
 }

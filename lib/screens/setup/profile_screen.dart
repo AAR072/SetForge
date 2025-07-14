@@ -24,25 +24,20 @@ class ProfileScreen extends StatelessWidget {
           opacity: 1,
           child: Text(
             "Profile", // AppBar title
-            style: TextStyle(
-              fontWeight: FontWeight.w900,
-              fontSize: 16
-            ),
+            style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
           ),
         ),
       ),
       body: NotificationListener<OverscrollIndicatorNotification>(
-      onNotification: (overscroll) {
-        overscroll.disallowIndicator(); // Prevent Overscroll Indication
-        return true;
-      },
-      child: ListView(
-        shrinkWrap: true,
-        children: [
-          Text("Setup/Profile")
-        ],
+        onNotification: (overscroll) {
+          overscroll.disallowIndicator(); // Prevent Overscroll Indication
+          return true;
+        },
+        child: ListView(
+          shrinkWrap: true,
+          children: [Text("Setup/Profile")],
+        ),
       ),
-    ),
     );
   }
 }

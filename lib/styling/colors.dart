@@ -9,25 +9,29 @@ class Palette {
   static const Color pink = Color(0xFFFF4D80);
   static const Color red = Color(0xFFFD855F);
   static Color get primaryBackground {
-    return SharedPrefsHelper.isDarkMode? Color(0xFF141413) : Color(0xFFF6F6F6);
+    return SharedPrefsHelper.isDarkMode ? Color(0xFF141413) : Color(0xFFF6F6F6);
   }
-  static Color get secondaryBackground {
-    return SharedPrefsHelper.isDarkMode? Color(0xFF1F1F1F) : Colors.white;
-  }
-  static const Color tertiaryBackground = Color(0xFF333333);
 
+  static Color get secondaryBackground {
+    return SharedPrefsHelper.isDarkMode ? Color(0xFF1F1F1F) : Colors.white;
+  }
+
+  static const Color tertiaryBackground = Color(0xFF333333);
 
   // #### For switches in the prefs ####
   static Color get inverseThemeColor {
-    return SharedPrefsHelper.isDarkMode? Colors.white : Colors.black;
+    return SharedPrefsHelper.isDarkMode ? Colors.white : Colors.black;
   }
-  static Color get inverseDimThemeColor{
-    return SharedPrefsHelper.isDarkMode? Color(0XFF8A8888) : Color(0XFF8A8888);
+
+  static Color get inverseDimThemeColor {
+    return SharedPrefsHelper.isDarkMode ? Color(0XFF8A8888) : Color(0XFF8A8888);
   }
-  static Color get themeColor{
-    return !SharedPrefsHelper.isDarkMode? Colors.white : Colors.black;
+
+  static Color get themeColor {
+    return !SharedPrefsHelper.isDarkMode ? Colors.white : Colors.black;
   }
+
   static Color get inactiveBgColor {
-    return SharedPrefsHelper.isDarkMode? Color(0xFF333333) : Color(0xFFF6F6F6);
+    return SharedPrefsHelper.isDarkMode ? Color(0xFF333333) : Color(0xFFF6F6F6);
   }
 }

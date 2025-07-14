@@ -29,89 +29,99 @@ class ThemeScreen extends StatelessWidget {
           opacity: 1,
           child: Text(
             "Theme", // AppBar title
-            style: TextStyle(
-              fontWeight: FontWeight.w900,
-              fontSize: 16
-            ),
+            style: TextStyle(fontWeight: FontWeight.w900, fontSize: 16),
           ),
         ),
       ),
       body: NotificationListener<OverscrollIndicatorNotification>(
-      onNotification: (overscroll) {
-        overscroll.disallowIndicator(); // Prevent Overscroll Indication
-        return true;
-      },
-      child: ListView(
-        shrinkWrap: true,
-        children: [
-          Column(
-            children: [
-              Padding(padding: EdgeInsets.only(top: 20)),
-              Text(
-                "Set the brightness mode",
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 20,
-                ),
-              ),
-              Padding(padding: EdgeInsets.only(top: 10)),
-              ToggleSwitch(
-                initialLabelIndex: SharedPrefsHelper.isDarkMode ? 0 : 1,
-                minWidth: double.maxFinite,
-                activeBgColors: [
-                [Palette.inverseThemeColor],
-                [Palette.inverseThemeColor]
-                ],
-                activeFgColor: Palette.themeColor,
-                inactiveBgColor: Palette.inactiveBgColor,
-                inactiveFgColor: Palette.inverseThemeColor,
-                totalSwitches: 2,
-                labels: ['Dark Mode', 'Light Mode'],
-                icons: [Icons.dark_mode, Icons.sunny],
-                onToggle: (index) {
-                  if (index != null) {
-      showDialog(
-        context: context,
-        builder: (BuildContext dialogContext) {
-          return AlertDialog(
-            title: Text("Warning"),
-            content: Text("This will restart the app and delete any unsaved workouts. Do you want to continue?"),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(dialogContext).pop(); // Close dialog
-                },
-                child: Text("Cancel"),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(dialogContext).pop(); // Close dialog
-                  SharedPrefsHelper.setBoolean("darkMode", index == 0);
-                    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-                      // Make the bar transparent
-                      systemNavigationBarColor: Colors.transparent,
-                      systemNavigationBarContrastEnforced: false,
-                      systemNavigationBarIconBrightness: SharedPrefsHelper.isDarkMode? Brightness.light: Brightness.dark,
-                      statusBarColor: Colors.transparent,
-                      statusBarBrightness: SharedPrefsHelper.isDarkMode? Brightness.dark : Brightness.light,
-                  ));
-                  // Ensure Phoenix.rebirth() runs after the dialog is fully closed
-                  Future.microtask(() => Phoenix.rebirth(context));
-                },
-                child: Text("OK"),
-              ),
-            ],
-          );
+        onNotification: (overscroll) {
+          overscroll.disallowIndicator(); // Prevent Overscroll Indication
+          return true;
         },
-      );
-    }
-                },
-              ),
-            ],
-          )
-        ],
+        child: ListView(
+          shrinkWrap: true,
+          children: [
+            Column(
+              children: [
+                Padding(padding: EdgeInsets.only(top: 20)),
+                Text(
+                  "Set the brightness mode",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20,
+                  ),
+                ),
+                Padding(padding: EdgeInsets.only(top: 10)),
+                ToggleSwitch(
+                  initialLabelIndex: SharedPrefsHelper.isDarkMode ? 0 : 1,
+                  minWidth: double.maxFinite,
+                  activeBgColors: [
+                    [Palette.inverseThemeColor],
+                    [Palette.inverseThemeColor]
+                  ],
+                  activeFgColor: Palette.themeColor,
+                  inactiveBgColor: Palette.inactiveBgColor,
+                  inactiveFgColor: Palette.inverseThemeColor,
+                  totalSwitches: 2,
+                  labels: ['Dark Mode', 'Light Mode'],
+                  icons: [Icons.dark_mode, Icons.sunny],
+                  onToggle: (index) {
+                    if (index != null) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext dialogContext) {
+                          return AlertDialog(
+                            title: Text("Warning"),
+                            content: Text(
+                                "This will restart the app and delete any unsaved workouts. Do you want to continue?"),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(dialogContext)
+                                      .pop(); // Close dialog
+                                },
+                                child: Text("Cancel"),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(dialogContext)
+                                      .pop(); // Close dialog
+                                  SharedPrefsHelper.setBoolean(
+                                      "darkMode", index == 0);
+                                  SystemChrome.setSystemUIOverlayStyle(
+                                      SystemUiOverlayStyle(
+                                    // Make the bar transparent
+                                    systemNavigationBarColor:
+                                        Colors.transparent,
+                                    systemNavigationBarContrastEnforced: false,
+                                    systemNavigationBarIconBrightness:
+                                        SharedPrefsHelper.isDarkMode
+                                            ? Brightness.light
+                                            : Brightness.dark,
+                                    statusBarColor: Colors.transparent,
+                                    statusBarBrightness:
+                                        SharedPrefsHelper.isDarkMode
+                                            ? Brightness.dark
+                                            : Brightness.light,
+                                  ));
+                                  // Ensure Phoenix.rebirth() runs after the dialog is fully closed
+                                  Future.microtask(
+                                      () => Phoenix.rebirth(context));
+                                },
+                                child: Text("OK"),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+                  },
+                ),
+              ],
+            )
+          ],
+        ),
       ),
-    ),
     );
   }
 }

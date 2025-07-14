@@ -2,7 +2,7 @@ import 'package:setforge/database/db_helper.dart';
 import 'package:setforge/database/models.dart';
 
 /// A Data Access Object (DAO) for managing [Movement] entities in the database.
-class MovementDao{
+class MovementDao {
   // Private constructor
   MovementDao._();
 

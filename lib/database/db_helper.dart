@@ -24,7 +24,7 @@ class DatabaseHelper {
     if (Platform.isLinux) PathProviderLinux.registerWith();
     final dbPath = await getApplicationDocumentsDirectory();
     final path = join(dbPath.path, filePath);
-      // Check if the directory exists, if not, create it
+    // Check if the directory exists, if not, create it
     return await openDatabase(
       path,
       version: 1,
@@ -35,13 +35,13 @@ class DatabaseHelper {
   Future<void> _createDB(Database db, int version) async {
     // Get a list of all table names
     List<Map<String, dynamic>> tables = await db.rawQuery(
-      "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'");
+        "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'");
 
     // Drop each table
     for (var table in tables) {
-    String tableName = table['name'];
-    await db.execute("DROP TABLE IF EXISTS $tableName");
-  }
+      String tableName = table['name'];
+      await db.execute("DROP TABLE IF EXISTS $tableName");
+    }
     // Create Workouts table
     await db.execute('''
       CREATE TABLE Workouts (
@@ -167,22 +167,23 @@ class DatabaseHelper {
     final movements = await loadAllMovementsFromAssets();
     final batch = db.batch();
     for (var movement in movements) {
-    batch.insert('Movements', movement.toMap());
+      batch.insert('Movements', movement.toMap());
     }
     await batch.commit(noResult: true);
   }
-/// Deletes the entire [Database]. It must be reinitialized with a getter.
-Future<void> deleteDatabaseFile() async {
-  final dbPath = await getApplicationDocumentsDirectory();
-  final path = join(dbPath.path, 'setforge.db');
 
-  // Close the existing database connection
-  if (_database != null) {
-    await _database!.close();
-    _database = null;
+  /// Deletes the entire [Database]. It must be reinitialized with a getter.
+  Future<void> deleteDatabaseFile() async {
+    final dbPath = await getApplicationDocumentsDirectory();
+    final path = join(dbPath.path, 'setforge.db');
+
+    // Close the existing database connection
+    if (_database != null) {
+      await _database!.close();
+      _database = null;
+    }
+
+    // Delete the database file
+    await deleteDatabase(path);
   }
-
-  // Delete the database file
-  await deleteDatabase(path);
-}
 }

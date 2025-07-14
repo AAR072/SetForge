@@ -108,10 +108,10 @@ final ThemeData macroFactorLightTheme = ThemeData(
         borderSide: BorderSide(color: Palette.tertiaryBackground),
       ),
     ),
-  cardTheme: CardThemeData(
-    color: Palette.secondaryBackground,
-    elevation: 0,
-  ),
+    cardTheme: CardThemeData(
+      color: Palette.secondaryBackground,
+      elevation: 0,
+    ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor:
             Palette.secondaryBackground, // Bottom navigation bar background

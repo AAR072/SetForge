@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class ControlScreen extends StatefulWidget{
+class ControlScreen extends StatefulWidget {
   const ControlScreen({super.key, this.child});
   final Widget? child;
 
   @override
-  State<ControlScreen> createState() =>
-    _ControlScreenState();
-
-
+  State<ControlScreen> createState() => _ControlScreenState();
 }
+
 class _ControlScreenState extends State<ControlScreen> {
   int currentIndex = 0;
   void changeTab(int index) {
@@ -33,7 +31,6 @@ class _ControlScreenState extends State<ControlScreen> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,11 +44,15 @@ class _ControlScreenState extends State<ControlScreen> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(currentIndex == 1 ? Icons.fitness_center : Icons.fitness_center_outlined),
+            icon: Icon(currentIndex == 1
+                ? Icons.fitness_center
+                : Icons.fitness_center_outlined),
             label: 'Workout',
           ),
           BottomNavigationBarItem(
-            icon: Icon(currentIndex == 2 ? Icons.manage_accounts : Icons.manage_accounts_outlined),
+            icon: Icon(currentIndex == 2
+                ? Icons.manage_accounts
+                : Icons.manage_accounts_outlined),
             label: 'Setup',
           ),
         ],

@@ -53,7 +53,8 @@ String createWorkoutTitle(DateTime dateTime) {
 double calculateTotalVolume(Workout workout) {
   double totalVolume = 0;
   for (var exercise in workout.exercises) {
-    for (var set in exercise.sets?? []) { // Use workoutSets property from Exercise
+    for (var set in exercise.sets ?? []) {
+      // Use workoutSets property from Exercise
       totalVolume += (set.reps * set.weight);
     }
   }
@@ -67,6 +68,7 @@ int calculateTotalSets(Workout workout) {
   }
   return totalSets;
 }
+
 int generateTempId() => DateTime.now().microsecondsSinceEpoch;
 
 String formatWeight(double weight) {
@@ -81,3 +83,15 @@ String formatWeight(double weight) {
   return weight.toString();
 }
 
+String secondsParser(int totalSeconds){
+  final minutes = totalSeconds ~/ 60;
+  final seconds = totalSeconds % 60;
+
+  String formatted;
+  if (minutes > 0) {
+    formatted = "${minutes}m ${seconds}s";
+  } else {
+    formatted = "${seconds}s";
+  }
+  return formatted;
+}
