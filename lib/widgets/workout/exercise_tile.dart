@@ -82,9 +82,10 @@ class _ExerciseTileState extends State<ExerciseTile> {
           // ROW 1 — Avatar + Title + 3-dot menu
           Row(
             children: [
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 20,
-                child: Icon(Icons.fitness_center),
+                backgroundImage: AssetImage(widget.exercise.movement.imageUrl),
+                backgroundColor: Colors.transparent, // optional: remove default color
               ),
               const SizedBox(width: 12),
               Expanded(

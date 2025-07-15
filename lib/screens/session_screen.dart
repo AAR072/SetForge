@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 
@@ -8,6 +7,7 @@ import 'package:setforge/helpers/session_helpers.dart';
 import 'package:setforge/notifiers/workout_notifier.dart';
 import 'package:setforge/database/models.dart'; // For Workout
 import 'package:setforge/styling/colors.dart';
+import 'package:setforge/widgets/workout/duration_text.dart';
 import 'package:setforge/widgets/workout/exercise_tile.dart';
 
 class SessionScreen extends ConsumerStatefulWidget {
@@ -18,7 +18,61 @@ class SessionScreen extends ConsumerStatefulWidget {
 }
 
 class _SessionScreenState extends ConsumerState<SessionScreen> {
-  Timer? _timer;
+  void _showExerciseMenu(BuildContext context, Exercise exercise, int exerciseIndex) {
+    final workoutNotifier = ref.read(workoutProvider.notifier);
+    final workout = ref.read(workoutProvider);
+    if (workout == null) return;
+
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.swap_horiz), // placeholder icon
+                  title: const Text("Replace Exercise"),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    // No-op for now
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.drag_handle), // placeholder icon
+                  title: const Text("Reorder Exercise"),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    // No-op for now
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.delete, color: Palette.red,), // placeholder icon, change later
+                  title: const Text(
+                    "Remove Exercise",
+                    style: TextStyle(color: Palette.red)),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    final updatedExercises = List<Exercise>.from(workout.exercises)
+                    ..removeAt(exerciseIndex);
+                    final updatedWorkout = workout.copyWith(exercises: updatedExercises);
+                    workoutNotifier.updateWorkout(updatedWorkout);
+                  },
+                ),
+
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 
   @override
   void initState() {
@@ -40,45 +94,13 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
       }
     });
 
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      setState(() {}); // rebuild every second for live duration update
-    });
   }
 
   @override
   void dispose() {
-    _timer?.cancel();
     super.dispose();
   }
 
-  String timeConverter(DateTime start) {
-    final now = DateTime.now();
-    final duration = now.difference(start);
-
-    if (duration.inHours >= 24) {
-      return "24h+";
-    }
-
-    final hours = duration.inHours;
-    final minutes = duration.inMinutes % 60;
-    final seconds = duration.inSeconds % 60;
-
-    // If hours and minutes both zero, only show seconds
-    if (hours == 0 && minutes == 0) {
-      return "${seconds}s";
-    }
-
-    final buffer = StringBuffer();
-    if (hours > 0) {
-      buffer.write("${hours}h ");
-    }
-    if (minutes > 0 || hours > 0) {
-      buffer.write("${minutes}m ");
-    }
-    buffer.write("${seconds}s");
-
-    return buffer.toString().trim();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +119,6 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
       );
     }
 
-    final durationText = timeConverter(workout.date);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Palette.secondaryBackground,
@@ -174,14 +195,14 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
               Container(
                 height: 1,
                 color: Palette.inverseThemeColor
-                    .withOpacity(0.2), // subtle line color
+                .withOpacity(0.2), // subtle line color
               ),
 
               // Your existing bar container
               Container(
                 color: Palette.primaryBackground,
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -198,18 +219,10 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                             ),
                           ),
                           const SizedBox(height: 4),
-                          Text(
-                            durationText,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Palette.inverseThemeColor,
-                            ),
-                          ),
+                          DurationText(startTime: workout.date),
                         ],
                       ),
                     ),
-
                     // Volume block
                     Expanded(
                       child: Column(
@@ -272,12 +285,12 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
         ),
       ),
       body: NotificationListener<OverscrollIndicatorNotification>(
-        onNotification: (overscroll) {
-          overscroll.disallowIndicator();
-          return true;
-        },
-        child: SafeArea(child:
-      ListView(
+      onNotification: (overscroll) {
+        overscroll.disallowIndicator();
+        return true;
+      },
+      child: SafeArea(child:
+        ListView(
           padding: const EdgeInsets.all(16),
           children: [
             Text(
@@ -308,8 +321,9 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                     // your existing code
                   },
                   onOpenMenu: () {
-                    // your existing code
+                    _showExerciseMenu(context, exercise, exerciseIndex);
                   },
+
                   onNotesChanged: (val) {
                     final workoutNotifier = ref.read(workoutProvider.notifier);
                     final workout = ref.read(workoutProvider);
@@ -326,59 +340,59 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
 
                     // Update the workout with the new exercises list
                     final updatedWorkout =
-                        workout.copyWith(exercises: updatedExercises);
+                    workout.copyWith(exercises: updatedExercises);
 
                     // Push the updated workout back to state
                     workoutNotifier.updateWorkout(updatedWorkout);
                   },
                   onRestTimerPressed: () async {
                     final selected = await showModalBottomSheet<int>(
-                      context: context,
-                      builder: (context) {
-                        int tempRestTime = exercise.restTime;
-                        return SafeArea(
-                          child: Container(
-                            height: 200,
-                            child: Column(
-                              children: [
-                                const SizedBox(height: 12),
-                                const Text(
-                                  "Select Rest Time (seconds)",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18),
-                                ),
-                                Expanded(
-                                  child: CupertinoPicker(
-                                    scrollController:
-                                        FixedExtentScrollController(
-                                      initialItem: exercise.restTime ~/ 5,
-                                    ),
-                                    itemExtent: 50,
-                                    onSelectedItemChanged: (index) {
-                                      tempRestTime = index * 5;
-                                    },
-                                    children: List.generate(241, (index) {
-                                      final totalSeconds = index * 5;
-                                      final formatted =
-                                          secondsParser(totalSeconds);
-
-                                      return Center(child: Text(formatted));
-                                    }),
+                    context: context,
+                    builder: (context) {
+                      int tempRestTime = exercise.restTime;
+                      return SafeArea(
+                        child: Container(
+                          height: 200,
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 12),
+                              const Text(
+                                "Select Rest Time (seconds)",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18),
+                              ),
+                              Expanded(
+                                child: CupertinoPicker(
+                                  scrollController:
+                                  FixedExtentScrollController(
+                                    initialItem: exercise.restTime ~/ 5,
                                   ),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop(tempRestTime);
+                                  itemExtent: 50,
+                                  onSelectedItemChanged: (index) {
+                                    tempRestTime = index * 5;
                                   },
-                                  child: const Text("Done"),
+                                  children: List.generate(241, (index) {
+                                    final totalSeconds = index * 5;
+                                    final formatted =
+                                    secondsParser(totalSeconds);
+
+                                    return Center(child: Text(formatted));
+                                  }),
                                 ),
-                              ],
-                            ),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(tempRestTime);
+                                },
+                                child: const Text("Done"),
+                              ),
+                            ],
                           ),
-                        );
-                      },
-                    );
+                        ),
+                      );
+                    },
+                  );
 
                     if (selected != null) {
                       final workoutNotifier =
@@ -413,14 +427,14 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                     updatedSets[setIndex] = updatedSet;
 
                     final updatedExercise =
-                        exercise.copyWith(sets: updatedSets);
+                    exercise.copyWith(sets: updatedSets);
                     final updatedExercises = workout.exercises
-                        .map(
-                            (ex) => ex.id == exercise.id ? updatedExercise : ex)
-                        .toList();
+                    .map(
+                    (ex) => ex.id == exercise.id ? updatedExercise : ex)
+                    .toList();
 
                     final updatedWorkout =
-                        workout.copyWith(exercises: updatedExercises);
+                    workout.copyWith(exercises: updatedExercises);
                     workoutNotifier.updateWorkout(updatedWorkout);
                   },
                   onAddSet: () {
@@ -443,17 +457,17 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                     );
 
                     final updatedSets = List<WorkoutSet>.from(exercise.sets)
-                      ..add(newSet);
+                    ..add(newSet);
 
                     final updatedExercise =
-                        exercise.copyWith(sets: updatedSets);
+                    exercise.copyWith(sets: updatedSets);
                     final updatedExercises = workout.exercises
-                        .map(
-                            (ex) => ex.id == exercise.id ? updatedExercise : ex)
-                        .toList();
+                    .map(
+                    (ex) => ex.id == exercise.id ? updatedExercise : ex)
+                    .toList();
 
                     final updatedWorkout =
-                        workout.copyWith(exercises: updatedExercises);
+                    workout.copyWith(exercises: updatedExercises);
                     workoutNotifier.updateWorkout(updatedWorkout);
                   },
                   onDeleteSet: (setIndex) {
@@ -463,17 +477,17 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                     if (workout == null) return;
 
                     final updatedSets = List<WorkoutSet>.from(exercise.sets)
-                      ..removeAt(setIndex);
+                    ..removeAt(setIndex);
 
                     final updatedExercise =
-                        exercise.copyWith(sets: updatedSets);
+                    exercise.copyWith(sets: updatedSets);
                     final updatedExercises = workout.exercises
-                        .map(
-                            (ex) => ex.id == exercise.id ? updatedExercise : ex)
-                        .toList();
+                    .map(
+                    (ex) => ex.id == exercise.id ? updatedExercise : ex)
+                    .toList();
 
                     final updatedWorkout =
-                        workout.copyWith(exercises: updatedExercises);
+                    workout.copyWith(exercises: updatedExercises);
                     workoutNotifier.updateWorkout(updatedWorkout);
                   },
                 );
@@ -482,13 +496,13 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
             const SizedBox(height: 16),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      Palette.blue, // <-- sets the button’s fill color
-                  elevation: 0),
+                backgroundColor:
+                Palette.blue, // <-- sets the button’s fill color
+                elevation: 0),
               onPressed: () async {
                 // Push and wait for result (assumed to be a List<Movement>)
                 final result =
-                    await context.push<List<Movement>>('/select-exercises');
+                await context.push<List<Movement>>('/select-exercises');
 
                 if (result != null && result.isNotEmpty) {
                   // Start from existing exercises, add new exercises for each movement from result
@@ -520,7 +534,7 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
               },
               child: Row(
                 mainAxisSize: MainAxisSize
-                    .min, // this keeps the button tight around its content
+                .min, // this keeps the button tight around its content
                 children: [
                   Icon(Icons.add), // this is the plus icon
                   SizedBox(width: 8), // space between icon and text
@@ -532,42 +546,42 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Palette
-                    .secondaryBackground, // <-- sets the button’s fill color
+                .secondaryBackground, // <-- sets the button’s fill color
               ),
               onPressed: () async {
                 final confirm = await showDialog<bool>(
-                  context: context,
-                  barrierDismissible: false, // force the user to pick
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      backgroundColor: Palette.primaryBackground,
-                      title: const Text("Discard Workout?"),
-                      content: const Text(
-                        "Are you sure you want to discard this workout? This cannot be undone.",
+                context: context,
+                barrierDismissible: false, // force the user to pick
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    backgroundColor: Palette.primaryBackground,
+                    title: const Text("Discard Workout?"),
+                    content: const Text(
+                      "Are you sure you want to discard this workout? This cannot be undone.",
+                    ),
+                    actions: [
+                      TextButton(
+                        child: const Text(
+                          "Cancel",
+                          style: TextStyle(color: Palette.blue),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                        },
                       ),
-                      actions: [
-                        TextButton(
-                          child: const Text(
-                            "Cancel",
-                            style: TextStyle(color: Palette.blue),
-                          ),
-                          onPressed: () {
-                            Navigator.of(context).pop(false);
-                          },
+                      TextButton(
+                        child: const Text(
+                          "Discard",
+                          style: TextStyle(color: Palette.red),
                         ),
-                        TextButton(
-                          child: const Text(
-                            "Discard",
-                            style: TextStyle(color: Palette.red),
-                          ),
-                          onPressed: () {
-                            Navigator.of(context).pop(true);
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                );
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
                 if (confirm == true) {
                   workoutNotifier.endWorkout();
                   Navigator.of(context).pop();
@@ -581,7 +595,7 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
           ],
         ),
       )
-      ),
+    ),
     );
   }
 }
