@@ -82,24 +82,23 @@ class _ExerciseTileState extends State<ExerciseTile> {
           // ROW 1 — Avatar + Title + 3-dot menu
           Row(
             children: [
-              GestureDetector(
-                onTap: widget.onOpenDetails,
-                child: Row(
-                  children: [
-                    const CircleAvatar(
-                      radius: 20,
-                      child: Icon(Icons.fitness_center),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      widget.exercise.movement.name,
-                      style: const TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  ],
+              const CircleAvatar(
+                radius: 20,
+                child: Icon(Icons.fitness_center),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  widget.exercise.movement.name,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  softWrap: true,
+                  maxLines: null,
+                  overflow: TextOverflow.visible,
                 ),
               ),
-              const Spacer(),
               IconButton(
                 icon: const Icon(Icons.more_vert),
                 onPressed: widget.onOpenMenu,
@@ -111,6 +110,9 @@ class _ExerciseTileState extends State<ExerciseTile> {
 
           // ROW 2 — Notes input
           TextField(
+            onTapOutside: (event) {
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
             controller: _notesController,
             decoration: InputDecoration(
               filled: false,
@@ -195,7 +197,7 @@ class _ExerciseTileState extends State<ExerciseTile> {
                       width: 30,
                       child: Center(
                         child: Text(
-                          "Done",
+                          "✓",
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -312,6 +314,9 @@ class _ExerciseTileState extends State<ExerciseTile> {
                         Expanded(
                           flex: 3,
                           child: TextField(
+                            onTapOutside: (event) {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            },
                             controller: weightController,
                             focusNode: weightFocus,
                             textAlign: TextAlign.center,
@@ -334,6 +339,9 @@ class _ExerciseTileState extends State<ExerciseTile> {
                         Expanded(
                           flex: 3,
                           child: TextField(
+                            onTapOutside: (event) {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                            },
                             controller: repsController,
                             focusNode: repsFocus,
                             textAlign: TextAlign.center,

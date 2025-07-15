@@ -83,7 +83,7 @@ String formatWeight(double weight) {
   return weight.toString();
 }
 
-String secondsParser(int totalSeconds){
+String secondsParser(int totalSeconds) {
   final minutes = totalSeconds ~/ 60;
   final seconds = totalSeconds % 60;
 

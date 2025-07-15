@@ -33,6 +33,7 @@ dependencies:
   sqflite_common_ffi: any
   path: ^1.8.0
   shared_preferences: ^2.5.3
+  fuzzywuzzy: ^1.2.0
   flutter:
     sdk: flutter
 

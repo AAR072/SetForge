@@ -1,3 +1,4 @@
+import 'package:setforge/screens/select_exercise.dart';
 import 'package:setforge/screens/session_screen.dart';
 import 'package:setforge/screens/setup/faq_screen.dart';
 import 'package:setforge/screens/setup/profile_screen.dart';
@@ -79,6 +80,11 @@ final router = GoRouter(
       ],
     ),
     GoRoute(
+      path: '/select-exercises',
+      builder: (context, state) => const SelectExercise(),
+      routes: [],
+    ),
+    GoRoute(
       path: '/units',
       builder: (context, state) => const UnitsScreen(),
       routes: [],
@@ -102,6 +108,6 @@ final router = GoRouter(
       path: '/session',
       builder: (context, state) => const SessionScreen(),
       routes: [],
-    )
+    ),
   ],
 );

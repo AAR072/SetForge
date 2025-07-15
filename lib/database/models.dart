@@ -146,6 +146,23 @@ class Movement {
       completionCount: map['completion_count'],
     );
   }
+
+  Movement clone() {
+    return Movement(
+      id: id,
+      name: name,
+      type: type,
+      oneRepMax: oneRepMax,
+      muscleGroups: Map<String, dynamic>.from(muscleGroups),
+      instructions: instructions,
+      imageUrl: imageUrl,
+      maxWeight: maxWeight,
+      maxSessionVolume: maxSessionVolume,
+      maxSetVolume: maxSetVolume,
+      equipment: equipment,
+      completionCount: completionCount,
+    );
+  }
 }
 
 class Maxes {

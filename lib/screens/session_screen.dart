@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
+import 'package:go_router/go_router.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:setforge/helpers/session_helpers.dart';
@@ -357,7 +359,8 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                                     },
                                     children: List.generate(241, (index) {
                                       final totalSeconds = index * 5;
-                                      final formatted = secondsParser(totalSeconds);
+                                      final formatted =
+                                          secondsParser(totalSeconds);
 
                                       return Center(child: Text(formatted));
                                     }),
@@ -481,38 +484,38 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                   backgroundColor:
                       Palette.blue, // <-- sets the button’s fill color
                   elevation: 0),
-              onPressed: () {
-                // Add a dummy exercise for example
-                final updatedExercises = List.of(workout.exercises)
-                  ..add(
-                    Exercise(
-                      id: generateTempId(),
-                      category: "Working",
-                      movement: Movement(
-                        id: generateTempId(),
-                        name: "New Movement",
-                        type: "Strength",
-                        oneRepMax: 100,
-                        muscleGroups: {},
-                        instructions: "",
-                        maxWeight: 0,
-                        maxSessionVolume: 0,
-                        maxSetVolume: 0,
-                        equipment: "",
-                        completionCount: 0,
-                      ),
-                      workoutId: workout.id ?? 0,
-                      orderIndex: workout.exercises.length,
-                      restTime: 60,
-                      notes: "",
-                      date: DateTime.now(),
-                      volume: 0,
-                    ),
-                  );
+              onPressed: () async {
+                // Push and wait for result (assumed to be a List<Movement>)
+                final result =
+                    await context.push<List<Movement>>('/select-exercises');
 
-                final updatedWorkout =
-                    workout.copyWith(exercises: updatedExercises);
-                workoutNotifier.updateWorkout(updatedWorkout);
+                if (result != null && result.isNotEmpty) {
+                  // Start from existing exercises, add new exercises for each movement from result
+                  final updatedExercises = List.of(workout.exercises);
+
+                  for (var i = 0; i < result.length; i++) {
+                    final movement = result[i];
+
+                    updatedExercises.add(
+                      Exercise(
+                        id: generateTempId(),
+                        category: "Working",
+                        movement: movement,
+                        workoutId: workout.id ?? 0,
+                        orderIndex:
+                            updatedExercises.length, // or i + existing length
+                        restTime: 60,
+                        notes: "",
+                        date: DateTime.now(),
+                        volume: 0,
+                      ),
+                    );
+                  }
+
+                  final updatedWorkout =
+                      workout.copyWith(exercises: updatedExercises);
+                  workoutNotifier.updateWorkout(updatedWorkout);
+                }
               },
               child: Row(
                 mainAxisSize: MainAxisSize
