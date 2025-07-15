@@ -276,8 +276,8 @@ class _SelectExerciseState extends State<SelectExercise> {
     final isAllEquipmentSelected = selectedEquipment == null;
     final equipmentLabel =
         isAllEquipmentSelected ? 'All Equipment' : selectedEquipment!;
-    final isAllMuslcesSelected = selectedMuscle == null;
-    final muscleLabel = isAllMuslcesSelected ? 'All Muscles' : selectedMuscle!;
+    final isAllMusclesSelected = selectedMuscle == null;
+    final muscleLabel = isAllMusclesSelected ? 'All Muscles' : selectedMuscle!;
 
     return Scaffold(
       appBar: AppBar(
@@ -382,7 +382,7 @@ class _SelectExerciseState extends State<SelectExercise> {
                           onPressed: _openMuscleDrawer,
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
-                            backgroundColor: isAllMuslcesSelected
+                            backgroundColor: isAllMusclesSelected
                                 ? Palette.secondaryBackground
                                 : Palette.blue,
                               foregroundColor: Palette.inverseThemeColor
@@ -420,12 +420,15 @@ class _SelectExerciseState extends State<SelectExercise> {
                                 borderRadius: BorderRadius.circular(8),
                                 color: Colors.grey[300],
                               ),
-                              child: movement.imageUrl.isNotEmpty
-                                  ? Image.network(
-                                      movement.imageUrl,
+                          child: () {
+                              final img = movement.imageUrl;
+                              return img.isNotEmpty
+                                  ? Image.asset(
+                                      img,
                                       fit: BoxFit.cover,
                                     )
-                                  : const Icon(Icons.image_not_supported),
+                                  : const Icon(Icons.image_not_supported);
+                            }(),
                             ),
                             title: Text(
                               movement.name,

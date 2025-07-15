@@ -23,9 +23,6 @@
     "Return to a standing position."
   ],
   "category": "olympic weightlifting",
-  "images": [
-    "Power_Jerk/0.jpg",
-    "Power_Jerk/1.jpg"
-  ],
+  "images": ["Power_Jerk.webp"],
   "id": "Power_Jerk"
 }

@@ -20,9 +20,6 @@
     "Return to upright position and then repeat for your other side."
   ],
   "category": "stretching",
-  "images": [
-    "Spinal_Stretch/0.jpg",
-    "Spinal_Stretch/1.jpg"
-  ],
+  "images": ["Spinal_Stretch.webp"],
   "id": "Spinal_Stretch"
 }

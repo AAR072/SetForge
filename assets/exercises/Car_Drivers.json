@@ -17,9 +17,6 @@
     "Repeat for the recommended amount of repetitions."
   ],
   "category": "strength",
-  "images": [
-    "Car_Drivers/0.jpg",
-    "Car_Drivers/1.jpg"
-  ],
+  "images": ["Car_Drivers.webp"],
   "id": "Car_Drivers"
 }

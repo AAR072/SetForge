@@ -21,9 +21,6 @@
     "The recovery phase simply involves straightening your arms, bending the knees, and bringing your body forward again as you transition back into the first phase."
   ],
   "category": "cardio",
-  "images": [
-    "Rowing_Stationary/0.jpg",
-    "Rowing_Stationary/1.jpg"
-  ],
+  "images": ["Rowing_Stationary.webp"],
   "id": "Rowing_Stationary"
 }

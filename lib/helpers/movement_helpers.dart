@@ -34,14 +34,14 @@ List<Map<String, String?>> generateMuscleOptions(List<Movement> allMovements) {
   final options = <Map<String, String?>>[];
 
   // Add the 'All' option first
-  options.add({'label': 'All', 'image': 'assets/all.png'});
+  options.add({'label': 'All', 'image': 'assets/images/default.webp'});
 
   for (final muscle in muscles) {
     final capitalized = muscle[0].toUpperCase() + muscle.substring(1);
     options.add({
       'label': capitalized,
       'image':
-          'assets/${muscle.toLowerCase()}.png', // or whatever naming convention
+          'assets/images/${muscle.toLowerCase()}.webp', // or whatever naming convention
     });
   }
 
@@ -69,7 +69,7 @@ List<Map<String, String?>> generateEquipmentOptions(
 
   final options = <Map<String, String?>>[];
 
-  options.add({'label': 'All', 'image': 'assets/all.png'});
+  options.add({'label': 'All', 'image': 'assets/images/default.webp'});
 
   for (final equipment in equipmentList) {
     if (equipment.isEmpty) continue; // extra safety
@@ -77,7 +77,7 @@ List<Map<String, String?>> generateEquipmentOptions(
     final capitalized = equipment[0].toUpperCase() + equipment.substring(1);
     options.add({
       'label': capitalized,
-      'image': 'assets/${equipment.toLowerCase()}.png',
+      'image': 'assets/images/${equipment.toLowerCase()}.webp',
     });
   }
 

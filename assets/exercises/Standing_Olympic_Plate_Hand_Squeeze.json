@@ -17,9 +17,6 @@
     "Repeat for the recommended amount of repetitions prescribed in your program."
   ],
   "category": "strength",
-  "images": [
-    "Standing_Olympic_Plate_Hand_Squeeze/0.jpg",
-    "Standing_Olympic_Plate_Hand_Squeeze/1.jpg"
-  ],
+  "images": ["Standing_Olympic_Plate_Hand_Squeeze.webp"],
   "id": "Standing_Olympic_Plate_Hand_Squeeze"
 }

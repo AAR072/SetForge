@@ -18,9 +18,6 @@
     "Repeat the movement for the prescribed amount of repetitions."
   ],
   "category": "strength",
-  "images": [
-    "Wide-Grip_Barbell_Bench_Press/0.jpg",
-    "Wide-Grip_Barbell_Bench_Press/1.jpg"
-  ],
+  "images": ["Wide-Grip_Barbell_Bench_Press.webp"],
   "id": "Wide-Grip_Barbell_Bench_Press"
 }

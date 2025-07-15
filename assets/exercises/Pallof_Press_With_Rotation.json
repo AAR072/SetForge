@@ -24,9 +24,6 @@
     "Then, reposition and repeat the same series of movements on the opposite side."
   ],
   "category": "strength",
-  "images": [
-    "Pallof_Press_With_Rotation/0.jpg",
-    "Pallof_Press_With_Rotation/1.jpg"
-  ],
+  "images": ["Pallof_Press_With_Rotation.webp"],
   "id": "Pallof_Press_With_Rotation"
 }

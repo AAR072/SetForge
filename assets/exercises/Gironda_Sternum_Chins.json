@@ -20,9 +20,6 @@
     "Repeat for the recommended amount of repetitions."
   ],
   "category": "strength",
-  "images": [
-    "Gironda_Sternum_Chins/0.jpg",
-    "Gironda_Sternum_Chins/1.jpg"
-  ],
+  "images": ["Gironda_Sternum_Chins.webp"],
   "id": "Gironda_Sternum_Chins"
 }

@@ -19,9 +19,6 @@
     "Repeat for the recommended amount of repetitions."
   ],
   "category": "strength",
-  "images": [
-    "Smith_Machine_Stiff-Legged_Deadlift/0.jpg",
-    "Smith_Machine_Stiff-Legged_Deadlift/1.jpg"
-  ],
+  "images": ["Smith_Machine_Stiff-Legged_Deadlift.webp"],
   "id": "Smith_Machine_Stiff-Legged_Deadlift"
 }

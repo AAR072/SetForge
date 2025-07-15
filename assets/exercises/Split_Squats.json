@@ -17,9 +17,6 @@
     "As you descend, immediately reverse direction, standing back up and jumping, reversing the position of your legs. Repeat 5-10 times on each leg."
   ],
   "category": "stretching",
-  "images": [
-    "Split_Squats/0.jpg",
-    "Split_Squats/1.jpg"
-  ],
+  "images": ["Split_Squats.webp"],
   "id": "Split_Squats"
 }

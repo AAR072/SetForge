@@ -16,9 +16,6 @@
     "To begin, seat yourself on the bike and adjust the seat to your height."
   ],
   "category": "cardio",
-  "images": [
-    "Bicycling/0.jpg",
-    "Bicycling/1.jpg"
-  ],
+  "images": ["Bicycling.webp"],
   "id": "Bicycling"
 }

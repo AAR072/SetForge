@@ -17,9 +17,6 @@
     "Repeat for the recommended amount of repetitions."
   ],
   "category": "strength",
-  "images": [
-    "Reverse_Barbell_Curl/0.jpg",
-    "Reverse_Barbell_Curl/1.jpg"
-  ],
+  "images": ["Reverse_Barbell_Curl.webp"],
   "id": "Reverse_Barbell_Curl"
 }

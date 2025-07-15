@@ -20,9 +20,6 @@
     "At the end, turn around and go back on the other leg."
   ],
   "category": "plyometrics",
-  "images": [
-    "Single-Leg_Hop_Progression/0.jpg",
-    "Single-Leg_Hop_Progression/1.jpg"
-  ],
+  "images": ["Single-Leg_Hop_Progression.webp"],
   "id": "Single-Leg_Hop_Progression"
 }

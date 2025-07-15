@@ -18,9 +18,6 @@
     "Return to the starting position."
   ],
   "category": "strength",
-  "images": [
-    "Single-Arm_Linear_Jammer/0.jpg",
-    "Single-Arm_Linear_Jammer/1.jpg"
-  ],
+  "images": ["Single-Arm_Linear_Jammer.webp"],
   "id": "Single-Arm_Linear_Jammer"
 }

@@ -17,9 +17,6 @@
     "Repeat for your other leg."
   ],
   "category": "stretching",
-  "images": [
-    "Chair_Leg_Extended_Stretch/0.jpg",
-    "Chair_Leg_Extended_Stretch/1.jpg"
-  ],
+  "images": ["Chair_Leg_Extended_Stretch.webp"],
   "id": "Chair_Leg_Extended_Stretch"
 }

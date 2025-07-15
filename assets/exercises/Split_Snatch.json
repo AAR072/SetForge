@@ -27,9 +27,6 @@
     "Carefully return the weight to floor."
   ],
   "category": "olympic weightlifting",
-  "images": [
-    "Split_Snatch/0.jpg",
-    "Split_Snatch/1.jpg"
-  ],
+  "images": ["Split_Snatch.webp"],
   "id": "Split_Snatch"
 }

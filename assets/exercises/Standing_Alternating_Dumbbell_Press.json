@@ -17,9 +17,6 @@
     "Repeat for the opposite side, continuing to alternate between arms."
   ],
   "category": "strength",
-  "images": [
-    "Standing_Alternating_Dumbbell_Press/0.jpg",
-    "Standing_Alternating_Dumbbell_Press/1.jpg"
-  ],
+  "images": ["Standing_Alternating_Dumbbell_Press.webp"],
   "id": "Standing_Alternating_Dumbbell_Press"
 }

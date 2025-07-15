@@ -29,6 +29,8 @@ Future main() async {
     statusBarBrightness: Brightness.dark,
   ));
   await DatabaseHelper.instance.database;
+  await DatabaseHelper.instance.deleteDatabaseFile();
+  await DatabaseHelper.instance.database;
 
   await SharedPrefsHelper.init();
   runApp(

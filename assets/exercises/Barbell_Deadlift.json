@@ -25,9 +25,6 @@
     "Perform the amount of repetitions prescribed in the program."
   ],
   "category": "strength",
-  "images": [
-    "Barbell_Deadlift/0.jpg",
-    "Barbell_Deadlift/1.jpg"
-  ],
+  "images": ["Barbell_Deadlift.webp"],
   "id": "Barbell_Deadlift"
 }

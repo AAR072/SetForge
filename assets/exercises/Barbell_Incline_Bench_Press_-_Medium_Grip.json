@@ -19,9 +19,6 @@
     "When you are done, place the bar back in the rack."
   ],
   "category": "strength",
-  "images": [
-    "Barbell_Incline_Bench_Press_-_Medium_Grip/0.jpg",
-    "Barbell_Incline_Bench_Press_-_Medium_Grip/1.jpg"
-  ],
+  "images": ["Barbell_Incline_Bench_Press_-_Medium_Grip.webp"],
   "id": "Barbell_Incline_Bench_Press_-_Medium_Grip"
 }

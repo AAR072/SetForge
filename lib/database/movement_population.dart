@@ -15,6 +15,10 @@ Future<List<Movement>> loadAllMovementsFromAssets() async {
     final jsonString =
         await rootBundle.loadString('assets/exercises/$fileName');
     final Map<String, dynamic> data = jsonDecode(jsonString);
+  String imagePath = '';
+    if (data['images'] != null && data['images'].isNotEmpty) {
+      imagePath = 'assets/images/${data['images'][0]}';
+    }
 
     Movement movement = Movement(
       name: data['name'] ?? '',
@@ -25,6 +29,7 @@ Future<List<Movement>> loadAllMovementsFromAssets() async {
         'secondary': List<String>.from(data['secondaryMuscles'] ?? []),
       },
       instructions: (data['instructions'] as List<dynamic>?)?.join('\n') ?? '',
+      imageUrl: imagePath,
       maxWeight: 0,
       maxSessionVolume: 0,
       maxSetVolume: 0,

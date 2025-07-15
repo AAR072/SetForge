@@ -19,9 +19,6 @@
     "Repeat for the recommended amount of repetitions."
   ],
   "category": "strength",
-  "images": [
-    "See-Saw_Press_Alternating_Side_Press/0.jpg",
-    "See-Saw_Press_Alternating_Side_Press/1.jpg"
-  ],
+  "images": ["See-Saw_Press_Alternating_Side_Press.webp"],
   "id": "See-Saw_Press_Alternating_Side_Press"
 }

@@ -19,9 +19,6 @@
     "Switch arms and repeat the exercise."
   ],
   "category": "strength",
-  "images": [
-    "Standing_Bent-Over_One-Arm_Dumbbell_Triceps_Extension/0.jpg",
-    "Standing_Bent-Over_One-Arm_Dumbbell_Triceps_Extension/1.jpg"
-  ],
+  "images": ["Standing_Bent-Over_One-Arm_Dumbbell_Triceps_Extension.webp"],
   "id": "Standing_Bent-Over_One-Arm_Dumbbell_Triceps_Extension"
 }

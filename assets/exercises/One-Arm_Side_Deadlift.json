@@ -24,9 +24,6 @@
     "Switch arms and repeat the movement."
   ],
   "category": "strength",
-  "images": [
-    "One-Arm_Side_Deadlift/0.jpg",
-    "One-Arm_Side_Deadlift/1.jpg"
-  ],
+  "images": ["One-Arm_Side_Deadlift.webp"],
   "id": "One-Arm_Side_Deadlift"
 }
