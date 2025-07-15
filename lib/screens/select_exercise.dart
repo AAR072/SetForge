@@ -320,6 +320,7 @@ class _SelectExerciseState extends State<SelectExercise> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   TextField(
+                  style: TextStyle(),
                     controller: _searchController,
                     onChanged: (value) {
                       setState(() {
@@ -332,6 +333,7 @@ class _SelectExerciseState extends State<SelectExercise> {
                     },
                     decoration: InputDecoration(
                       hintText: "Search exercise",
+                    hintStyle: TextStyle(color: Palette.inverseThemeColor.withOpacity(0.8)),
                       filled: true,
                       fillColor: Palette.secondaryBackground,
                       border: OutlineInputBorder(
@@ -366,6 +368,7 @@ class _SelectExerciseState extends State<SelectExercise> {
                             backgroundColor: isAllEquipmentSelected
                                 ? Palette.secondaryBackground
                                 : Palette.blue,
+                          foregroundColor: Palette.inverseThemeColor
                           ),
                           child: Text(
                             equipmentLabel,
@@ -382,9 +385,11 @@ class _SelectExerciseState extends State<SelectExercise> {
                             backgroundColor: isAllMuslcesSelected
                                 ? Palette.secondaryBackground
                                 : Palette.blue,
-                          ),
-                          child: Text(
-                            muscleLabel,
+                              foregroundColor: Palette.inverseThemeColor
+
+                        ),
+                        child: Text(
+                          muscleLabel,
                             style: const TextStyle(fontWeight: FontWeight.w700),
                           ),
                         ),

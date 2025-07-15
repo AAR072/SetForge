@@ -401,7 +401,8 @@ class _ExerciseTileState extends State<ExerciseTile> {
                   label: const Text("Add Set"),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 1),
-                    backgroundColor: Palette.tertiaryBackground,
+                    backgroundColor: Palette.secondaryBackground,
+                    foregroundColor: Palette.inverseThemeColor
                   ),
                 ),
               ),
