@@ -276,7 +276,8 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
           overscroll.disallowIndicator();
           return true;
         },
-        child: ListView(
+        child: SafeArea(child:
+      ListView(
           padding: const EdgeInsets.all(16),
           children: [
             Text(
@@ -579,6 +580,7 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
             ),
           ],
         ),
+      )
       ),
     );
   }
