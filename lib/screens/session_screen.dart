@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reorderables/reorderables.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:setforge/helpers/exercise_tile_helpers.dart';
 import 'package:setforge/helpers/session_helpers.dart';
@@ -17,6 +18,23 @@ class SessionScreen extends ConsumerStatefulWidget {
 
 class _SessionScreenState extends ConsumerState<SessionScreen> {
 
+
+  void _onReorder(int oldIndex, int newIndex) {
+
+    final workoutNotifier = ref.read(workoutProvider.notifier);
+    final workout = ref.read(workoutProvider);
+
+    if (workout == null) return;
+
+
+    final exercises = List.of(workout.exercises);
+    final exercise = exercises.removeAt(oldIndex);
+    exercises.insert(newIndex, exercise);
+
+    workoutNotifier.updateWorkout(
+      workout.copyWith(exercises: exercises),
+    );
+  }
 
 
   @override
@@ -53,16 +71,18 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
     final workoutNotifier = ref.read(workoutProvider.notifier);
 
     if (workout == null) {
-      return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Palette.secondaryBackground,
-          title: const Text("No Active Workout"),
-        ),
-        body: const Center(
-          child: Text("No workout in progress."),
-        ),
-      );
-    }
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Palette.secondaryBackground,
+        title: const Text("No Active Workout"),
+      ),
+      body: const Center(
+        child: Text("No workout in progress."),
+      ),
+    );
+  }
+
+    ScrollController _scrollController = PrimaryScrollController.of(context) ?? ScrollController();
 
     return Scaffold(
       appBar: AppBar(
@@ -132,26 +152,20 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
           const SizedBox(width: 8),
         ],
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(74), // a bit taller to fit lines
+          preferredSize: const Size.fromHeight(74),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Top thin line
               Container(
                 height: 1,
-                color: Palette.inverseThemeColor
-                .withOpacity(0.2), // subtle line color
+                color: Palette.inverseThemeColor.withOpacity(0.2),
               ),
-
-              // Your existing bar container
               Container(
                 color: Palette.primaryBackground,
-                padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Duration block
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,7 +182,6 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                         ],
                       ),
                     ),
-                    // Volume block
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,8 +205,6 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                         ],
                       ),
                     ),
-
-                    // Sets block
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -220,7 +231,6 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                   ],
                 ),
               ),
-              // Bottom thin line
               Container(
                 height: 1,
                 color: Palette.inverseThemeColor.withOpacity(0.2),
@@ -234,169 +244,161 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
         overscroll.disallowIndicator();
         return true;
       },
-      child: SafeArea(child:
-        ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            Text(
-              "Workout: ${workout.title}",
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              "Notes: ${workout.notes.isEmpty ? "None" : workout.notes}",
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              "Exercises: ${workout.exercises.length}",
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            Column(
-              children: workout.exercises.asMap().entries.map((exerciseEntry) {
-                final exerciseIndex = exerciseEntry.key;
-                final exercise = exerciseEntry.value;
-                return ExerciseTile(
-                  weightHint: "15", // or whatever default you want
-                  repsHint: "12",
-
-                  exercise: exercise,
-                  onOpenDetails: () {
-                    // your existing code
-                  },
-                  onOpenMenu: () {
-                    showExerciseMenu(
-                      context: context,
-                      ref: ref,
-                      exercise: exercise,
-                      exerciseIndex: exerciseIndex,
-                    );
-                  },
-
-                  onNotesChanged: (val) {
-                    handleNotesChanged(
-                      ref: ref,
-                      exercise: exercise,
-                      newNotes: val,
-                    );
-                  },
-                  onRestTimerPressed: () {
-                    handleRestTimerPressed(
-                      context: context,
-                      ref: ref,
-                      exercise: exercise,
-                    );
-                  },
-                  workoutSets: exercise.sets,
-
-                  onToggleCompleted: (setIndex, toggleValue) {
-                    // we start a timer here
-                  },
-
-                  onSetChanged: (setIndex, updatedSet) {
-                    handleSetChanged(
-                      ref: ref,
-                      exercise: exercise,
-                      setIndex: setIndex,
-                      updatedSet: updatedSet,
-                    );
-                  },
-
-                  onAddSet: () {
-                    handleAddSet(
-                      ref: ref,
-                      exercise: exercise,
-                    );
-                  },
-
-                  onDeleteSet: (setIndex) {
-                    handleDeleteSet(
-                      ref: ref,
-                      exercise: exercise,
-                      setIndex: setIndex,
-                    );
-                  },
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor:
-                Palette.blue, // <-- sets the button’s fill color
-                elevation: 0),
-                onPressed: () {
-                  handleAddExercisesPressed(
-                    context: context,
-                    ref: ref,
-                    workout: workout,
-                  );
-                },
-              child: Row(
-                mainAxisSize: MainAxisSize
-                .min, // this keeps the button tight around its content
-                children: [
-                  Icon(Icons.add), // this is the plus icon
-                  SizedBox(width: 8), // space between icon and text
-                  Text("Add Exercise"),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Palette
-                .secondaryBackground, // <-- sets the button’s fill color
-              ),
-              onPressed: () async {
-                final confirm = await showDialog<bool>(
-                context: context,
-                barrierDismissible: false, // force the user to pick
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    backgroundColor: Palette.primaryBackground,
-                    title: const Text("Discard Workout?"),
-                    content: const Text(
-                      "Are you sure you want to discard this workout? This cannot be undone.",
+      child: SafeArea(
+        child: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Workout: ${workout.title}",
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
-                    actions: [
-                      TextButton(
-                        child: const Text(
-                          "Cancel",
-                          style: TextStyle(color: Palette.blue),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pop(false);
-                        },
-                      ),
-                      TextButton(
-                        child: const Text(
-                          "Discard",
-                          style: TextStyle(color: Palette.red),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pop(true);
-                        },
-                      ),
-                    ],
+                    const SizedBox(height: 16),
+                    Text(
+                      "Notes: ${workout.notes.isEmpty ? "None" : workout.notes}",
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      "Exercises: ${workout.exercises.length}",
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                ),
+              ),
+            ),
+            ReorderableSliverList(
+              delegate: ReorderableSliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                  final exercise = workout.exercises[index];
+                  return ExerciseTile(
+                    key: ValueKey(exercise.id),
+                    weightHint: "15",
+                    repsHint: "12",
+                    exercise: exercise,
+                    onOpenDetails: () { /* your existing code */ },
+                    onOpenMenu: () {
+                      showExerciseMenu(
+                        context: context,
+                        ref: ref,
+                        exercise: exercise,
+                        exerciseIndex: index,
+                      );
+                    },
+                    onNotesChanged: (val) {
+                      handleNotesChanged(
+                        ref: ref,
+                        exercise: exercise,
+                        newNotes: val,
+                      );
+                    },
+                    onRestTimerPressed: () {
+                      handleRestTimerPressed(
+                        context: context,
+                        ref: ref,
+                        exercise: exercise,
+                      );
+                    },
+                    workoutSets: exercise.sets,
+                    onToggleCompleted: (setIndex, toggleValue) {
+                      // your existing code
+                    },
+                    onSetChanged: (setIndex, updatedSet) {
+                      handleSetChanged(
+                        ref: ref,
+                        exercise: exercise,
+                        setIndex: setIndex,
+                        updatedSet: updatedSet,
+                      );
+                    },
+                    onAddSet: () {
+                      handleAddSet(
+                        ref: ref,
+                        exercise: exercise,
+                      );
+                    },
+                    onDeleteSet: (setIndex) {
+                      handleDeleteSet(
+                        ref: ref,
+                        exercise: exercise,
+                        setIndex: setIndex,
+                      );
+                    },
                   );
                 },
-              );
-                if (confirm == true) {
-                  workoutNotifier.endWorkout();
-                  Navigator.of(context).pop();
-                }
-              },
-              child: const Text(
-                "Discard Workout",
-                style: TextStyle(color: Palette.red),
+                childCount: workout.exercises.length,
+              ),
+              onReorder: _onReorder             ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.add),
+                      label: const Text("Add Exercise"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                        Palette.blue, // <-- sets the button’s fill color
+                        elevation: 0),
+                      onPressed: () {
+                        handleAddExercisesPressed(
+                          context: context,
+                          ref: ref,
+                          workout: workout,
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Palette.secondaryBackground,
+                      ),
+                      onPressed: () async {
+                        final confirm = await showDialog<bool>(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            backgroundColor: Palette.primaryBackground,
+                            title: const Text("Discard Workout?"),
+                            content: const Text(
+                              "Are you sure you want to discard this workout? This cannot be undone.",
+                            ),
+                            actions: [
+                              TextButton(
+                                child: const Text("Cancel", style: TextStyle(color: Palette.blue)),
+                                onPressed: () => Navigator.of(context).pop(false),
+                              ),
+                              TextButton(
+                                child: const Text("Discard", style: TextStyle(color: Palette.red)),
+                                onPressed: () => Navigator.of(context).pop(true),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                        if (confirm == true) {
+                          workoutNotifier.endWorkout();
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      child: const Text("Discard Workout", style: TextStyle(color: Palette.red)),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
         ),
-      )
+      ),
     ),
     );
-  }
-}
+  }}
