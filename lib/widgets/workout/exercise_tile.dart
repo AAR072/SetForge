@@ -94,6 +94,7 @@ class _ExerciseTileState extends State<ExerciseTile> {
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
+                    color: Palette.blue
                   ),
                   softWrap: true,
                   maxLines: null,

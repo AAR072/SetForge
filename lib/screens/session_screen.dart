@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
-import 'package:go_router/go_router.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:setforge/helpers/exercise_tile_helpers.dart';
 import 'package:setforge/helpers/session_helpers.dart';
 import 'package:setforge/notifiers/workout_notifier.dart';
 import 'package:setforge/database/models.dart'; // For Workout
@@ -18,60 +16,7 @@ class SessionScreen extends ConsumerStatefulWidget {
 }
 
 class _SessionScreenState extends ConsumerState<SessionScreen> {
-  void _showExerciseMenu(BuildContext context, Exercise exercise, int exerciseIndex) {
-    final workoutNotifier = ref.read(workoutProvider.notifier);
-    final workout = ref.read(workoutProvider);
-    if (workout == null) return;
 
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.swap_horiz), // placeholder icon
-                  title: const Text("Replace Exercise"),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    // No-op for now
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.drag_handle), // placeholder icon
-                  title: const Text("Reorder Exercise"),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    // No-op for now
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.delete, color: Palette.red,), // placeholder icon, change later
-                  title: const Text(
-                    "Remove Exercise",
-                    style: TextStyle(color: Palette.red)),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    final updatedExercises = List<Exercise>.from(workout.exercises)
-                    ..removeAt(exerciseIndex);
-                    final updatedWorkout = workout.copyWith(exercises: updatedExercises);
-                    workoutNotifier.updateWorkout(updatedWorkout);
-                  },
-                ),
-
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
 
 
   @override
@@ -321,95 +266,27 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                     // your existing code
                   },
                   onOpenMenu: () {
-                    _showExerciseMenu(context, exercise, exerciseIndex);
+                    showExerciseMenu(
+                      context: context,
+                      ref: ref,
+                      exercise: exercise,
+                      exerciseIndex: exerciseIndex,
+                    );
                   },
 
                   onNotesChanged: (val) {
-                    final workoutNotifier = ref.read(workoutProvider.notifier);
-                    final workout = ref.read(workoutProvider);
-
-                    if (workout == null) return;
-
-                    // Create updated exercise with new notes but keep sets
-                    final updatedExercise = exercise.copyWith(notes: val);
-
-                    // Replace the exercise in the workout's exercise list
-                    final updatedExercises = workout.exercises.map((ex) {
-                      return ex.id == exercise.id ? updatedExercise : ex;
-                    }).toList();
-
-                    // Update the workout with the new exercises list
-                    final updatedWorkout =
-                    workout.copyWith(exercises: updatedExercises);
-
-                    // Push the updated workout back to state
-                    workoutNotifier.updateWorkout(updatedWorkout);
+                    handleNotesChanged(
+                      ref: ref,
+                      exercise: exercise,
+                      newNotes: val,
+                    );
                   },
-                  onRestTimerPressed: () async {
-                    final selected = await showModalBottomSheet<int>(
-                    context: context,
-                    builder: (context) {
-                      int tempRestTime = exercise.restTime;
-                      return SafeArea(
-                        child: Container(
-                          height: 200,
-                          child: Column(
-                            children: [
-                              const SizedBox(height: 12),
-                              const Text(
-                                "Select Rest Time (seconds)",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18),
-                              ),
-                              Expanded(
-                                child: CupertinoPicker(
-                                  scrollController:
-                                  FixedExtentScrollController(
-                                    initialItem: exercise.restTime ~/ 5,
-                                  ),
-                                  itemExtent: 50,
-                                  onSelectedItemChanged: (index) {
-                                    tempRestTime = index * 5;
-                                  },
-                                  children: List.generate(241, (index) {
-                                    final totalSeconds = index * 5;
-                                    final formatted =
-                                    secondsParser(totalSeconds);
-
-                                    return Center(child: Text(formatted));
-                                  }),
-                                ),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop(tempRestTime);
-                                },
-                                child: const Text("Done"),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  );
-
-                    if (selected != null) {
-                      final workoutNotifier =
-                          ref.read(workoutProvider.notifier);
-                      final workout = ref.read(workoutProvider);
-                      if (workout == null) return;
-
-                      final updatedExercise =
-                          exercise.copyWith(restTime: selected);
-                      final updatedExercises = workout.exercises.map((ex) {
-                        return ex.id == exercise.id ? updatedExercise : ex;
-                      }).toList();
-
-                      final updatedWorkout =
-                          workout.copyWith(exercises: updatedExercises);
-                      workoutNotifier.updateWorkout(updatedWorkout);
-                    }
+                  onRestTimerPressed: () {
+                    handleRestTimerPressed(
+                      context: context,
+                      ref: ref,
+                      exercise: exercise,
+                    );
                   },
                   workoutSets: exercise.sets,
 
@@ -418,77 +295,27 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                   },
 
                   onSetChanged: (setIndex, updatedSet) {
-                    final workoutNotifier = ref.read(workoutProvider.notifier);
-                    final workout = ref.read(workoutProvider);
-
-                    if (workout == null) return;
-
-                    final updatedSets = List<WorkoutSet>.from(exercise.sets);
-                    updatedSets[setIndex] = updatedSet;
-
-                    final updatedExercise =
-                    exercise.copyWith(sets: updatedSets);
-                    final updatedExercises = workout.exercises
-                    .map(
-                    (ex) => ex.id == exercise.id ? updatedExercise : ex)
-                    .toList();
-
-                    final updatedWorkout =
-                    workout.copyWith(exercises: updatedExercises);
-                    workoutNotifier.updateWorkout(updatedWorkout);
-                  },
-                  onAddSet: () {
-                    final workoutNotifier = ref.read(workoutProvider.notifier);
-                    final workout = ref.read(workoutProvider);
-
-                    if (workout == null) return;
-
-                    final newSet = WorkoutSet(
-                      notes: "",
-                      completed: false,
-                      id: generateTempId(),
-                      exerciseId: exercise.id ?? 0,
-                      reps: 0,
-                      weight: 0,
-                      time: 0,
-                      distance: 0,
-                      rpe: 0,
-                      type: "working",
+                    handleSetChanged(
+                      ref: ref,
+                      exercise: exercise,
+                      setIndex: setIndex,
+                      updatedSet: updatedSet,
                     );
-
-                    final updatedSets = List<WorkoutSet>.from(exercise.sets)
-                    ..add(newSet);
-
-                    final updatedExercise =
-                    exercise.copyWith(sets: updatedSets);
-                    final updatedExercises = workout.exercises
-                    .map(
-                    (ex) => ex.id == exercise.id ? updatedExercise : ex)
-                    .toList();
-
-                    final updatedWorkout =
-                    workout.copyWith(exercises: updatedExercises);
-                    workoutNotifier.updateWorkout(updatedWorkout);
                   },
+
+                  onAddSet: () {
+                    handleAddSet(
+                      ref: ref,
+                      exercise: exercise,
+                    );
+                  },
+
                   onDeleteSet: (setIndex) {
-                    final workoutNotifier = ref.read(workoutProvider.notifier);
-                    final workout = ref.read(workoutProvider);
-
-                    if (workout == null) return;
-
-                    final updatedSets = List<WorkoutSet>.from(exercise.sets)
-                    ..removeAt(setIndex);
-
-                    final updatedExercise =
-                    exercise.copyWith(sets: updatedSets);
-                    final updatedExercises = workout.exercises
-                    .map(
-                    (ex) => ex.id == exercise.id ? updatedExercise : ex)
-                    .toList();
-
-                    final updatedWorkout =
-                    workout.copyWith(exercises: updatedExercises);
-                    workoutNotifier.updateWorkout(updatedWorkout);
+                    handleDeleteSet(
+                      ref: ref,
+                      exercise: exercise,
+                      setIndex: setIndex,
+                    );
                   },
                 );
               }).toList(),
@@ -499,39 +326,13 @@ class _SessionScreenState extends ConsumerState<SessionScreen> {
                 backgroundColor:
                 Palette.blue, // <-- sets the button’s fill color
                 elevation: 0),
-              onPressed: () async {
-                // Push and wait for result (assumed to be a List<Movement>)
-                final result =
-                await context.push<List<Movement>>('/select-exercises');
-
-                if (result != null && result.isNotEmpty) {
-                  // Start from existing exercises, add new exercises for each movement from result
-                  final updatedExercises = List.of(workout.exercises);
-
-                  for (var i = 0; i < result.length; i++) {
-                    final movement = result[i];
-
-                    updatedExercises.add(
-                      Exercise(
-                        id: generateTempId(),
-                        category: "Working",
-                        movement: movement,
-                        workoutId: workout.id ?? 0,
-                        orderIndex:
-                            updatedExercises.length, // or i + existing length
-                        restTime: 60,
-                        notes: "",
-                        date: DateTime.now(),
-                        volume: 0,
-                      ),
-                    );
-                  }
-
-                  final updatedWorkout =
-                      workout.copyWith(exercises: updatedExercises);
-                  workoutNotifier.updateWorkout(updatedWorkout);
-                }
-              },
+                onPressed: () {
+                  handleAddExercisesPressed(
+                    context: context,
+                    ref: ref,
+                    workout: workout,
+                  );
+                },
               child: Row(
                 mainAxisSize: MainAxisSize
                 .min, // this keeps the button tight around its content
